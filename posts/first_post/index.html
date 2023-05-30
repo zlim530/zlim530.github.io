@@ -1,0 +1,2569 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        :root {
+            --accent-color: #FF4D4D;
+        }
+    </style>
+
+    
+    
+    
+    
+    
+    
+
+    
+    <title>C# 异步编程</title>
+    <meta name="description" content="">
+    <meta name="keywords" content=''>
+
+    <meta property="og:url" content="https://zlim530.github.io/posts/first_post/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="C# 异步编程">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="https://zlim530.github.io/">
+    <meta property="og:image:secure_url" content="https://zlim530.github.io/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="C# 异步编程">
+    <meta name="twitter:description" content="">
+    <meta property="twitter:domain" content="https://zlim530.github.io/posts/first_post/">
+    <meta property="twitter:url" content="https://zlim530.github.io/posts/first_post/">
+    <meta name="twitter:image" content="https://zlim530.github.io/">
+
+    
+    <link rel="canonical" href="https://zlim530.github.io/posts/first_post/" />
+
+    <link rel="stylesheet" type="text/css" href="https://zlim530.github.io//css/normalize.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" type="text/css" href="https://zlim530.github.io//css/main.css">
+    <link disabled id="dark-theme" rel="stylesheet" href="https://zlim530.github.io//css/dark.css">
+
+    <script src="https://zlim530.github.io//js/svg-injector.min.js"></script>
+    <script src="https://zlim530.github.io//js/feather-icons.min.js"></script>
+    <script src="https://zlim530.github.io//js/main.js"></script>
+
+    
+    
+</head>
+<body>
+        <script type="text/javascript">
+            
+            setThemeByUserPref();
+        </script><header class="header">
+    <nav class="header-nav">
+
+        
+
+        <div class="nav-title">
+            <a class="nav-brand" href="https://zlim530.github.io/">Zlim530 Blog Site</a>
+        </div>
+
+        <div class="nav-links">
+            
+            <div class="nav-link">
+                <a href="https://zlim530.github.io/posts/"> Posts </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="https://zlim530.github.io/tags/"> Tags </a>
+            </div>
+            
+            <div class="nav-link">
+                <a href="https://github.com"><span data-feather='github'></span>  </a>
+            </div>
+            
+
+            <span class="nav-icons-divider"></span>
+            <div class="nav-link dark-theme-toggle">
+                <span id="dark-theme-toggle-screen-reader-target" class="sr-only"></span>
+                <a>
+                    <span id="theme-toggle-icon" data-feather="moon"></span>
+                </a>
+            </div>
+
+            <div class="nav-link" id="hamburger-menu-toggle">
+                <span id="hamburger-menu-toggle-screen-reader-target" class="sr-only">menu</span>
+                <a>
+                    <span data-feather="menu"></span>
+                </a>
+            </div>
+
+            
+            <ul class="nav-hamburger-list visibility-hidden">
+                
+                <li class="nav-item">
+                    <a href="https://zlim530.github.io/posts/"> Posts </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="https://zlim530.github.io/tags/"> Tags </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="https://github.com"><span data-feather='github'></span>  </a>
+                </li>
+                
+                <li class="nav-item dark-theme-toggle">
+                    <span id="dark-theme-toggle-screen-reader-target" class="sr-only">theme</span>
+                    <a>
+                        <span id="theme-toggle-icon" data-feather="moon"></span>
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+</header>
+<main id="content">
+    <div class="post container">
+    <div class="post-header-section">
+        <h1>C# 异步编程</h1>
+        <small role="doc-subtitle"></small>
+        <p class="post-date">
+            May 30, 2023
+        </p>
+
+        <ul class="post-tags">
+        
+        </ul>
+    </div>
+
+    <div class="post-content">
+        <p>
+            <h3 id="1-异步和并行-概念">1. 异步和并行-概念</h3>
+<ul>
+<li>
+<p><strong>First of All：不要把异步和多线程混为一谈</strong></p>
+</li>
+<li>
+<p><strong>异步：某个事件不等待另外一个事件完成就可以怎么怎么样</strong></p>
+<ul>
+<li><strong>因为异步，所以时间上有交错，不同线程间在某一个时间点上会重合，而某时间点就会有先后执行</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>同步：某个事件必须等待另外一个事件的完成才可以怎么怎么样</strong></p>
+</li>
+</ul>
+<h4 id="11-概念区别">1.1 概念区别</h4>
+<ul>
+<li>
+<p><strong>并行（parallel）：多个任务真正的“同时”进行，只能在多核处理器上实现，即真正的多线程，因为一个CPU核心同一个时间点只能处理一个任务，所以并行只能在多（核）处理器上实现。并行是能够真正提高程序运行效率的</strong></p>
+</li>
+<li>
+<p><strong>并发（concurrency）：多个任务在运行时间上有重叠，通常在单核CPU中实现，在微观上来看CPU在同一时间片上还是只能处理一个任务，即串行</strong></p>
+<ul>
+<li>
+<p>在电脑没有多核CPU的时代（或者程序没有运行在多核上），我们用并发（concurrency）来模拟并行。</p>
+<p>简单的说：</p>
+<ul>
+<li>CPU的运行被分成很多的“时间片”（时间片非常的短，我们人类是察觉不到的）</li>
+<li>这个时间片里CPU可以执行A任务，下一个时间片里CPU就执行B任务，再下一个时间片C任务；然后再回来执行A，再执行B，再C；再A……如此往复</li>
+<li>在我们看来，A/B/C三个任务似乎被同时执行一样</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>多线程（multiple-threads）：一个进程上有多个线程同时运行。在某些语境下可以和“并发”混用，因为目前的操作系统是使用多线程实现并发</strong></p>
+</li>
+<li>
+<p><strong>进程（process）：重量级，是操作系统分配资源（例如内存/CPU/IO等资源）的单位，通常是一个运行中的程序</strong></p>
+<ul>
+<li>由操作系统管理（调度）</li>
+<li>一个应用程序至少有一个（可以有多个）进程</li>
+<li>资源包括：内存、CPU、I/O等</li>
+<li>进程之间的资源不能共享</li>
+<li><img src="http://17bang.ren/Images/Summary/2020/4/15/1/%E4%BB%BB%E5%8A%A1%E7%AE%A1%E7%90%86%E5%99%A8.png" alt="img"></li>
+</ul>
+</li>
+<li>
+<p><strong>线程（thread）：轻量级，共享进程资源</strong></p>
+<ul>
+<li>线程不具备独立完成一个任务的资源，它需要进程的支持</li>
+<li>多个线程可共享进程资源</li>
+<li><img src="http://17bang.ren/Images/Summary/2020/4/15/1/%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B.png" alt="img"></li>
+</ul>
+</li>
+<li>
+<p><strong>为什么需要“假的”并行：并发？</strong></p>
+<ul>
+<li>增加响应（responsive），常用于UI</li>
+<li>多核CPU提高吞吐量（throughput）。主要是源于CPU（尤其是多核CPU）和I/O操作在效率上的巨大差距；如果只能同步串行（即同步单线程）的话，CPU将存在大量的“等待空闲”时间，不利于资源利用。</li>
+</ul>
+</li>
+<li>
+<p><strong>为什么需要？</strong></p>
+<p>无论是多进程，还是多线程，本质上都是为了让多个进程/线程同时（或者至少看起来像同时）完成一个工作，从而：</p>
+</li>
+</ul>
+<ol>
+<li>压榨系统性能。简单理解，一桌菜10个人吃比1个人吃要快（<em>并发后文详述</em>）</li>
+<li>提高用户响应。操作系统多进程，所以我们可以一边听歌（一个进程）一边写代码（又一个进程）；射击游戏多线程，所以你跑你的，我打我的，不会你跑的时候我就不能开枪，我开枪的时候你就不能跑……（用WinForm 做坦克大战就这效果）</li>
+</ol>
+<p>用于ASP.NET的IIS本身就是多线程的。</p>
+<p><img src="http://17bang.ren/Images/Summary/2020/4/15/1/IIS%E5%A4%9A%E7%BA%BF%E7%A8%8B.png" alt="img"></p>
+<h3 id="2-异步和并行-线程代码">2. 异步和并行-线程代码</h3>
+<h4 id="21-thread类">2.1 Thread类</h4>
+<ul>
+<li><strong>Task是在.NET 4.0之后引入的，之前.NET提供的是Thread（线程）类。</strong></li>
+</ul>
+<h5 id="211-单线程">2.1.1 单线程</h5>
+<ul>
+<li><strong>在此之前，我们的代码都是运行在一个线程中，这被称之为“单线程编程”</strong>。</li>
+<li><strong>我们默认使用的这个线程被称为主（primary）线程，或者启动线程。使用Thread.CurrentThread可以获取：</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Threading;
+</span></span><span style="display:flex;"><span>Thread current = Thread.CurrentThread;
+</span></span></code></pre></div><h5 id="212-多线程">2.1.2 多线程</h5>
+<ul>
+<li><strong>让代码运行在多个线程中，就被称之为“多线程编程”，又称之为并发。</strong></li>
+<li><strong>可以new一个工作线程：</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(){
+</span></span><span style="display:flex;"><span>    Thread current = <span style="color:#66d9ef">new</span> Thread(Process); 
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>	current.Start();
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 然后，可以获取线程的相关信息：注意自行下列代码时有可能会因为子线程 current 的执行完毕而抛出异常，那么此时可以获取当前正在执行的线程来查看下列信息：Thread current = Thread.CurrentThread;</span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(Thread.GetDomain().FriendlyName);
+</span></span><span style="display:flex;"><span>    Console.WriteLine(current.ManagedThreadId);     <span style="color:#75715e">//托管线程Id</span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(current.Priority);            <span style="color:#75715e">//优先级</span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(current.ThreadState);         <span style="color:#75715e">//线程状态</span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(current.IsThreadPoolThread);  <span style="color:#75715e">//是否线程池线程</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// new出来的Thread需要调用Start()来启动。多线程会带来异步和并发的效果：</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">20</span>; i++)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Console.WriteLine($&#34;{i}：ThreadId-{Thread.CurrentThread.ManagedThreadId}&#34;);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">new</span> Thread(() =&gt;
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;{i}：ThreadId-{Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>        }).Start();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Process()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">$&#34;ThreadId:{Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>说明：</strong>
+<ul>
+<li>为什么是managed？操作系统控制“真正的”线程，C#开发人员通过.NET运行时控制操作系统上真正的线程，我们获取的是.NET运行时中的线程ID</li>
+<li>优先级：当出现多个线程进行资源争夺时，操作系统按其优先级从高到低进行分配</li>
+<li>线程状态：因为线程中的任务无法在一个CPU时钟周期内完成，当CPU被分配去处理其他线程时，当前线程也不能被“销毁”，只需要改变其状态即可</li>
+<li>线程池：后文详述</li>
+</ul>
+</li>
+</ul>
+<h5 id="213-前台线程和后台线程">2.1.3 前台线程和后台线程</h5>
+<ul>
+<li>
+<p>上述线程（主线程和工作线程）都是<strong>前台</strong>（foreground）线程：主线程与通过 new Thread() 创建。</p>
+</li>
+<li>
+<p>此外还有<strong>后台</strong>（background）线程：在线程池中维护。</p>
+</li>
+<li>
+<p>前后台线程的区别：如果前台线程终止，后台线程也会被结束；反之不成立。</p>
+</li>
+<li>
+<p>可以改变线程的前后台状态：</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>current.IsBackground = <span style="color:#66d9ef">true</span>;
+</span></span></code></pre></div><ul>
+<li>控制台可以显示所有前台线程的输出，但后台线程就不一定了：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">10</span>; i++)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Thread thread = <span style="color:#66d9ef">new</span> Thread(() =&gt;{
+</span></span><span style="display:flex;"><span>        Thread.Sleep(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">$&#34;{i}：ThreadId-{Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>       });
+</span></span><span style="display:flex;"><span>    thread.IsBackground = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>    thread.Start();
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;main-thread, i =&#34;</span> + i);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>
+<p><em>演示：后台线程中的控制台输出无法呈现</em></p>
+</li>
+<li>
+<p>因为多个线程之间的协调调度是一件非常麻烦而且容易出错（error-prone）的，.NET已经不建议开发人员直接使用Thread，而是使用Task。所以很多线程方法也已经被 [Obsolete] 标记 了，表示已经被弃用，比如：Abort()、Suspend()、Resume()……</p>
+</li>
+</ul>
+<h5 id="214-线程池">2.1.4 线程池</h5>
+<ol>
+<li>理解“池（pool）”的概念：</li>
+</ol>
+<ul>
+<li>一个线程使用完成后并不销毁，而是放回池中</li>
+<li>所以池中可以存放多个线程</li>
+<li>下次使用时直接从池中取出未使用的线程</li>
+</ul>
+<ol start="2">
+<li>一个进程只有一个线程池，池中的线程都是：</li>
+</ol>
+<ul>
+<li>后台线程</li>
+<li>使用默认的priority：即 normal</li>
+<li>使用相同的栈大小：1MB</li>
+<li>is in the multithreaded apartment（一个COM组件允许多个线程访问，COM组件内部具有同步线程的能力）</li>
+<li>使用于“短期运行”的线程</li>
+</ul>
+<ol start="3">
+<li>
+<p>可以设置线程池中的最大/最小线程数</p>
+</li>
+<li>
+<p>线程池中线程的调度依赖于：</p>
+</li>
+</ol>
+<ul>
+<li>
+<p>TaskScheduler：.NET中一个专门负责线程池中线程的调度。</p>
+</li>
+<li>
+<p>大体上来说，它利用以下一些方式提供其运行效率：</p>
+<ul>
+<li>使用队列，先进先出</li>
+<li>使用算法防止某些线程偷懒（work stealing）</li>
+<li>处理一些长运行（long-running）线程：会阻塞队列</li>
+<li>Task inlining（任务内联）：当一个 Task 在等待的时候，它就可以在“等待”状态的线程上同步执行</li>
+</ul>
+</li>
+<li>
+<p>绝大多数场景，我们使用.NET内置的调度就OK了。</p>
+</li>
+</ul>
+<h3 id="3-task">3. Task</h3>
+<ul>
+<li>
+<p><strong>总体上来说，.NET 鼓励我们使用：基于任务（Task）的异步编程</strong></p>
+</li>
+<li>
+<p><strong>Task 可以理解为工作在未来某个时间一定会完成的承诺（promise）</strong></p>
+</li>
+<li>
+<p><strong>如果Task需要一个线程，默认它会利用线程池来获取。</strong></p>
+</li>
+<li>
+<p><strong>.NET 为我们提供了两种 Task：</strong></p>
+<ul>
+<li><strong>Task：不返回值</strong></li>
+<li><strong>Task<!-- raw HTML omitted -->：返回一个 T 类型对象</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>在.NET core的I/O类库中，我们会发现这样的方法：</strong></p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> Task AppendAllLinesAsync(<span style="color:#66d9ef">string</span> path, IEnumerable&lt;<span style="color:#66d9ef">string</span>&gt; contents, Encoding encoding, CancellationToken cancellationToken = <span style="color:#66d9ef">default</span>); 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> Task&lt;<span style="color:#66d9ef">byte</span>[]&gt; ReadAllBytesAsync(<span style="color:#66d9ef">string</span> path, CancellationToken cancellationToken = <span style="color:#66d9ef">default</span>);
+</span></span></code></pre></div><p>注意：</p>
+<ul>
+<li>方法名被添加了Async后缀（推荐命名规范）</li>
+<li>方法的返回类型为Task或Task<!-- raw HTML omitted --></li>
+<li>Task在代码层面上讲，是一个实现了 IAsyncResult 的类，Task<!-- raw HTML omitted -->继承了Task。</li>
+<li>从逻辑层面上讲，Task是一份工作/任务，该工作/任务会被异步的执行，并未来某个时间完成。</li>
+</ul>
+<ol>
+<li><strong>示例代码：</strong></li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Threading;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Threading.Tasks;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @author zlim
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @create 2020/7/29 15:41:45
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> AsyncProgram {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TaskPractice</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args) {
+</span></span><span style="display:flex;"><span>            Action getUp = () =&gt; {
+</span></span><span style="display:flex;"><span>                Console.WriteLine(<span style="color:#e6db74">$&#34;Task:{Task.CurrentId}:起床啦！...&#34;</span>+
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">$&#34;ThreadId:{Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>                Console.WriteLine(<span style="color:#e6db74">$&#34;Task:{Task.CurrentId}:洗脸 ...&#34;</span> +
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">$&#34;ThreadId:{Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>            };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">10</span>; i++) {
+</span></span><span style="display:flex;"><span>                Console.WriteLine(<span style="color:#e6db74">$&#34;第{i + 1}次循环：&#34;</span>);
+</span></span><span style="display:flex;"><span>                Task t1 = <span style="color:#66d9ef">new</span> Task(getUp);
+</span></span><span style="display:flex;"><span>                t1.Start();
+</span></span><span style="display:flex;"><span>                Console.WriteLine(<span style="color:#e6db74">&#34;t1 start ... &#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            说明：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                因为 Task 是异步执行并且是基于线程池中线程的，因此在 Task 执行时会打乱时间顺序， 当一个 Task 拥有 CPU 的时间片是就会通过线程池中的一个线程执行，如果此时该 Task 失去了 CPU 的时间片，那么该 Task 就原地等待；当再次被分配到 CPU 的时间片时，该 Task 会按照上次执行到哪的顺序接着往下执行，而不是从头开始，并且接着往下执行时依然会通过上次线程池中的那个线程来执行；
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                不同的 Task 执行，可能会有下个 Task 从线程池中分配到的线程是上个 Task 分配到的线程，这样是不影响的，因为 Task 是从线程池中拿线程，所以开发者是无法控制某一个 Task 分配到哪一个线程的。但是 Task 只要能分配到线程就表明此线程是可用的。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>说明：</strong>
+<ul>
+<li><strong>因为 Task 是异步执行并且是基于线程池中线程的，因此在 Task 执行时会打乱时间顺序， 当一个 Task 拥有 CPU 的时间片是就会通过线程池中的一个线程执行，如果此时该 Task 失去了 CPU 的时间片，那么该 Task 就原地等待；当再次被分配到 CPU 的时间片时，该 Task 会按照上次执行到哪的顺序接着往下执行，而不是从头开始，并且接着往下执行时依然会通过上次线程池中的那个线程来执行；</strong></li>
+<li><strong>不同的 Task 执行，可能会有下个 Task 从线程池中分配到的线程是上个 Task 分配到的线程，这样是不影响的，因为 Task 是从线程池中拿线程，所以开发者是无法控制某一个 Task 分配到哪一个线程的。但是 Task 只要能分配到线程就表明此线程是可用的。</strong></li>
+</ul>
+</li>
+<li><strong>输出结果：</strong></li>
+</ul>
+<p>![image-20200729164345949](C:\360极速浏览器X下载\books\C# 异步编程.assets\image-20200729164345949.png)</p>
+<h4 id="31-action-和-func">3.1 Action 和 Func</h4>
+<ul>
+<li>
+<p>Task要完成的任务由 Action 和 Func 体现：</p>
+</li>
+<li>
+<p>Task：使用Action，该Task没有返回</p>
+</li>
+<li>
+<p>Task<!-- raw HTML omitted -->：使用Func，该Task还要返回一个T类型对象</p>
+</li>
+<li>
+<p>最直观的方式是将Action或Func作为Task的构造函数参数传入：</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>Action getup = () =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;getUp()……&#34;</span>);
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>Task t1 = <span style="color:#66d9ef">new</span> Task(getup);
+</span></span><span style="display:flex;"><span>t1.Start();
+</span></span></code></pre></div><p>或者：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>Func&lt;<span style="color:#66d9ef">int</span>&gt; getup = () =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;getUp()……&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Random().Next();
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>Task&lt;<span style="color:#66d9ef">int</span>&gt; t1 = <span style="color:#66d9ef">new</span> Task&lt;<span style="color:#66d9ef">int</span>&gt;(getup);
+</span></span><span style="display:flex;"><span>t1.Start();
+</span></span></code></pre></div><ul>
+<li>Action和Func都可以带一个object类型的传入参数，object的值在new Task()时传入：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>Action&lt;<span style="color:#66d9ef">object</span>&gt; getup = (x) =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">$&#34;getUp({x})……&#34;</span>);
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>Task t = <span style="color:#66d9ef">new</span> Task(getup, <span style="color:#ae81ff">23</span>);
+</span></span><span style="display:flex;"><span>t.Start();
+</span></span></code></pre></div><h4 id="32-新开一个-task-并不总是新开一个-thread">3.2 新开一个 Task 并不总是新开一个 Thread</h4>
+<ul>
+<li>
+<p><strong>从逻辑上讲，Task是比线程“更高层的抽象”，它是对任务（work）的封装，而不是线程（thread）的封装</strong></p>
+</li>
+<li>
+<p><strong>从实现上讲，异步并不一定需要一个线程。是否开启一个新线程，是由scheduler决定的，developer 可以强制要求开启一个新的线程，但无法要求任务必须运行在当前线程，并且任务运行的时间也不无法要求，只可以肯定任务（Task）一定是会完成的。</strong></p>
+</li>
+<li>
+<p><strong>目前来说：</strong></p>
+</li>
+<li>
+<ul>
+<li>I/O相关异步，是不开新线程的，异步由底层I/O实现</li>
+<li>CPU相关的线程，会利用TaskSchedular从线程池获取</li>
+</ul>
+</li>
+<li>
+<p><strong>示例代码：</strong></p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// Task 之 Action 讲解</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;args&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main0(<span style="color:#66d9ef">string</span>[] args) {
+</span></span><span style="display:flex;"><span>    Action getUp = () =&gt; {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">$&#34;Task:{Task.CurrentId}:起床啦！...&#34;</span>+
+</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">$&#34;ThreadId:{Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">$&#34;Task:{Task.CurrentId}:洗脸 ...&#34;</span> +
+</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">$&#34;ThreadId:{Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">10</span>; i++) {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">$&#34;第{i + 1}次循环：&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// new 出来的 Task 需要显式调用 Start() 才开始运行</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 但是好处是，可以在 t1.Start(); 之前写代码</span>
+</span></span><span style="display:flex;"><span>        Task t1 = <span style="color:#66d9ef">new</span> Task(getUp);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Console.WriteLine(&#34;Before t1.Start() ... &#34;);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Console.WriteLine(&#34;Before t1.Start() ... &#34;);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//t1.Start();</span>
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;t1 start ... &#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Task t1 = Task.Run(getUp);// 更灵活</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 不需要再调用 Start()，通过 Run 方法生成 Task 会自动运行，此时再调用 Start() 会抛出异常</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//t1.Start();// Unhandled exception. System.InvalidOperationException: Start may not be called on a task that was already started.</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Console.WriteLine(&#34;Task.Run(getUp) ... &#34;);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Task t1 = Task.Factory.StartNew(getUp);// 拥有众多重载</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Console.WriteLine(&#34;Task.Factory.StartNew(getUp) ... &#34;);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//t1.Wait();// 确保 t1 任务完成：会一直等着当前任务执行完毕，只有当当前任务执行完了才会继续往后执行程序中的代码</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Console.WriteLine(&#34;t1.Wait() ... &#34;);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        t1.RunSynchronously();<span style="color:#75715e">// 对当前的 Task 同步运行 TaskScheduler：那么完全就没有异步运行的效果了</span>
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;t1.RunSynchronously() ... &#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div></li>
+<li>
+<p><strong>输出结果：</strong></p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">通过</span> <span style="color:#66d9ef">new</span> Task <span style="color:#960050;background-color:#1e0010">输出结果为：</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#960050;background-color:#1e0010">第</span><span style="color:#ae81ff">1</span><span style="color:#960050;background-color:#1e0010">次循环：</span>
+</span></span><span style="display:flex;"><span>                t1 start ...
+</span></span><span style="display:flex;"><span>                <span style="color:#960050;background-color:#1e0010">第</span><span style="color:#ae81ff">2</span><span style="color:#960050;background-color:#1e0010">次循环：</span>
+</span></span><span style="display:flex;"><span>                t1 start ...
+</span></span><span style="display:flex;"><span>                <span style="color:#960050;background-color:#1e0010">第</span><span style="color:#ae81ff">3</span><span style="color:#960050;background-color:#1e0010">次循环：</span>
+</span></span><span style="display:flex;"><span>                t1 start ...
+</span></span><span style="display:flex;"><span>                <span style="color:#960050;background-color:#1e0010">第</span><span style="color:#ae81ff">4</span><span style="color:#960050;background-color:#1e0010">次循环：</span>
+</span></span><span style="display:flex;"><span>                t1 start ...
+</span></span><span style="display:flex;"><span>                <span style="color:#960050;background-color:#1e0010">第</span><span style="color:#ae81ff">5</span><span style="color:#960050;background-color:#1e0010">次循环：</span>
+</span></span><span style="display:flex;"><span>                t1 start ...
+</span></span><span style="display:flex;"><span>                <span style="color:#960050;background-color:#1e0010">第</span><span style="color:#ae81ff">6</span><span style="color:#960050;background-color:#1e0010">次循环：</span>
+</span></span><span style="display:flex;"><span>                t1 start ...
+</span></span><span style="display:flex;"><span>                <span style="color:#960050;background-color:#1e0010">第</span><span style="color:#ae81ff">7</span><span style="color:#960050;background-color:#1e0010">次循环：</span>
+</span></span><span style="display:flex;"><span>                t1 start ...
+</span></span><span style="display:flex;"><span>                <span style="color:#960050;background-color:#1e0010">第</span><span style="color:#ae81ff">8</span><span style="color:#960050;background-color:#1e0010">次循环：</span>
+</span></span><span style="display:flex;"><span>                t1 start ...
+</span></span><span style="display:flex;"><span>                <span style="color:#960050;background-color:#1e0010">第</span><span style="color:#ae81ff">9</span><span style="color:#960050;background-color:#1e0010">次循环：</span>
+</span></span><span style="display:flex;"><span>                t1 start ...
+</span></span><span style="display:flex;"><span>                <span style="color:#960050;background-color:#1e0010">第</span><span style="color:#ae81ff">10</span><span style="color:#960050;background-color:#1e0010">次循环：</span>
+</span></span><span style="display:flex;"><span>                Task:<span style="color:#ae81ff">3</span>:<span style="color:#960050;background-color:#1e0010">起床啦！</span>...ThreadId:<span style="color:#ae81ff">6</span>
+</span></span><span style="display:flex;"><span>                Task:<span style="color:#ae81ff">4</span>:<span style="color:#960050;background-color:#1e0010">起床啦！</span>...ThreadId:<span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>                Task:<span style="color:#ae81ff">4</span>:<span style="color:#960050;background-color:#1e0010">洗脸</span> ...ThreadId:<span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>                Task:<span style="color:#ae81ff">2</span>:<span style="color:#960050;background-color:#1e0010">起床啦！</span>...ThreadId:<span style="color:#ae81ff">7</span>
+</span></span><span style="display:flex;"><span>                Task:<span style="color:#ae81ff">2</span>:<span style="color:#960050;background-color:#1e0010">洗脸</span> ...ThreadId:<span style="color:#ae81ff">7</span>
+</span></span><span style="display:flex;"><span>                Task:<span style="color:#ae81ff">6</span>:<span style="color:#960050;background-color:#1e0010">起床啦！</span>...ThreadId:<span style="color:#ae81ff">7</span>
+</span></span><span style="display:flex;"><span>                Task:<span style="color:#ae81ff">1</span>:<span style="color:#960050;background-color:#1e0010">起床啦！</span>...ThreadId:<span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>                Task:<span style="color:#ae81ff">5</span>:<span style="color:#960050;background-color:#1e0010">起床啦！</span>...ThreadId:<span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>                Task:<span style="color:#ae81ff">5</span>:<span style="color:#960050;background-color:#1e0010">洗脸</span> ...ThreadId:<span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>                Task:<span style="color:#ae81ff">7</span>:<span style="color:#960050;background-color:#1e0010">起床啦！</span>...ThreadId:<span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>                Task:<span style="color:#ae81ff">7</span>:<span style="color:#960050;background-color:#1e0010">洗脸</span> ...ThreadId:<span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>                Task:<span style="color:#ae81ff">8</span>:<span style="color:#960050;background-color:#1e0010">起床啦！</span>...ThreadId:<span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>                t1 start ...
+</span></span><span style="display:flex;"><span>                Task:<span style="color:#ae81ff">3</span>:<span style="color:#960050;background-color:#1e0010">洗脸</span> ...ThreadId:<span style="color:#ae81ff">6</span>
+</span></span><span style="display:flex;"><span>                Task:<span style="color:#ae81ff">6</span>:<span style="color:#960050;background-color:#1e0010">洗脸</span> ...ThreadId:<span style="color:#ae81ff">7</span>
+</span></span><span style="display:flex;"><span>                Task:<span style="color:#ae81ff">10</span>:<span style="color:#960050;background-color:#1e0010">起床啦！</span>...ThreadId:<span style="color:#ae81ff">7</span>
+</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p><strong>说明：</strong></p>
+<ol>
+<li>
+<p><strong>因为 Task 是异步执行并且是基于线程池中线程的，因此在 Task 执行时会打乱时间顺序， 当一个 Task 拥有 CPU 的时间片是就会通过线程池中的一个线程执行，如果此时该 Task 失去了 CPU 的时间片，那么该 Task 就原地等待；当再次被分配到 CPU 的时间片时，该 Task 会按照上次执行到哪的顺序接着往下执行，而不是从头开始，并且接着往下执行时依然会通过上次线程池中的那个线程来执行；</strong></p>
+</li>
+<li>
+<p><strong>不同的 Task 执行，可能会有下个 Task 从线程池中分配到的线程是上个 Task 分配到的线程，这样是不影响的，因为 Task 是从线程池中拿线程，所以开发者是无法控制某一个 Task 分配到哪一个线程的。但是 Task 只要能分配到线程就表明此线程是可用的。</strong></p>
+</li>
+</ol>
+</li>
+<li>
+<p><strong>推荐顺序：==Task.Run() =&gt;Task.Factory.StartNew() =&gt;new Task()==</strong></p>
+</li>
+<li>
+<p><strong>理解区别：</strong></p>
+<ul>
+<li>==t1.Wait();== ：保证只有在当前任务执行完时才执行其他的代码，而其他代码的执行可以是异步的</li>
+<li>==t1.RunSynchronously();== ：保证当前代码同步执行，不管是 Task（任务）中的代码还是主线程中的代码</li>
+</ul>
+</li>
+</ul>
+<h4 id="33-向-taskt-传递参数">3.3 向 Task<!-- raw HTML omitted --> 传递参数</h4>
+<ol>
+<li><strong>方式一：直接使用外部变量，也通过闭包的方式：</strong></li>
+</ol>
+<ul>
+<li>
+<p>**示例代码：这样做的问题是，由于异步调用，i 值会 ==“飘忽不定”== **</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(){
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//for (int i = 0; i &lt; 10; i++) {</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 可能会出现主线程中的代码运行的 {i + 1} 的结果与 Task 任务中运行的 {i + 1} 的结果不一样</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 原因是：主线程上的 i 进行了 i++ 自增操作，但还没来得及进行 i &lt; 10 比较时，就被 for 循环中执行任务所分配的子线程拿到的</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 那么此时在任务中再进行 {i + 1} 计算就可能会发生打印出 （第11次）的结果：这其实就是并发下的线程不安全问题</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//    Console.WriteLine($&#34;第{i + 1}次&#34;);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//    Task&lt;long&gt; t1 = new Task&lt;long&gt;( () =&gt; {</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//        Console.WriteLine($&#34;（第{i+1}次）Task-{Task.CurrentId}：起床啦！~&#34;+</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//                          $&#34;ThreadId is {Thread.CurrentThread.ManagedThreadId}&#34;);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//        return DateTime.Now.Ticks;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//    });</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//    t1.Start();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//    Show(t1);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 通过 while 循环来看：</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> (i &lt; <span style="color:#ae81ff">10</span>) {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">$&#34;第{i}次：&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Task&lt;<span style="color:#66d9ef">long</span>&gt; t1 = <span style="color:#66d9ef">new</span> Task&lt;<span style="color:#66d9ef">long</span>&gt;(() =&gt; {
+</span></span><span style="display:flex;"><span>            Thread.Sleep(<span style="color:#ae81ff">1</span>);<span style="color:#75715e">// 延长任务的执行时间，让它有机会在 i++ 语句后面执行 Task 中的代码</span>
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;（第{i}次）Task-{Task.CurrentId}：起床啦！~&#34;</span> +
+</span></span><span style="display:flex;"><span>                              <span style="color:#e6db74">$&#34;ThreadId is {Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> DateTime.Now.Ticks;
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        t1.Start();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Show(t1);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;helloworld!&#34;</span>);
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;helloworld!&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        i++;
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">$&#34;{i}++&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Show(Task task) {
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">$&#34;Task-{task.Id}.Start() ... &#34;</span> + 
+</span></span><span style="display:flex;"><span>                      <span style="color:#e6db74">$&#34;task.status is {task.Status},&#34;</span> +
+</span></span><span style="display:flex;"><span>                      <span style="color:#e6db74">$&#34;task.IsCompleted is {task.IsCompleted},&#34;</span> +
+</span></span><span style="display:flex;"><span>                      <span style="color:#75715e">/* $&#34;task.AsyncState is {task.AsyncState},&#34;+*/</span>
+</span></span><span style="display:flex;"><span>                      <span style="color:#e6db74">$&#34;ThreadId is {Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 只要不是在子线程（Thread）或者任务（Task）中执行的代码那么就会在主线程中执行</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// ThreadId is 1:只要是在主线程的代码那么其 ManagedThreadId 就是1</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+<li>
+<p><strong>输出结果：</strong></p>
+<ul>
+<li>![image-20200730013214778](C:\360极速浏览器X下载\books\C# 异步编程.assets\image-20200730013214778.png)</li>
+</ul>
+</li>
+<li>
+<p><strong>说明：</strong></p>
+<ul>
+<li>如果是同步执行的代码，那执行完 Console.WriteLine($&quot;{i}++&quot;); 语句后会按照程序语句逻辑顺序返回去执行 while(i &lt; 10) 判断，此时判断为 false 于是就会跳出 while 循环；</li>
+<li>但是由于 Task 是基于异步多线程执行的，那么 Task 中代码的执行就可以不用等待 while(i &lt; 10) 语句的判断就执行其代码，因此就有可能 Task 中的代码会在 i++ 语句后面执行；那么此时</li>
+</ul>
+</li>
+</ul>
+<ol start="2">
+<li>
+<p><strong>方式二：在 new Task<!-- raw HTML omitted -->() 传入一个参数：==推荐使用==</strong></p>
+<ul>
+<li>
+<p>**示例代码：可以保证每次 Tas 收到恒定的传入值 **</p>
+</li>
+<li>
+<p><strong>说明：此种方式就相当于形参与实参，形参是对实参的一个拷贝，因此不会出现 ==第10次== 的输出结果</strong></p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">10</span>; i++) {
+</span></span><span style="display:flex;"><span>        Task&lt;<span style="color:#66d9ef">long</span>&gt; t1 = <span style="color:#66d9ef">new</span> Task&lt;<span style="color:#66d9ef">long</span>&gt;( (n) =&gt; {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;Task:{Task.CurrentId}:起床啦！...&#34;</span> +
+</span></span><span style="display:flex;"><span>                              <span style="color:#e6db74">$&#34;ThreadId:{Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> DateTime.Now.Ticks;
+</span></span><span style="display:flex;"><span>        },i);
+</span></span><span style="display:flex;"><span>        t1.Start();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Show(t1);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Show(Task task) {
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">$&#34;Task-{task.Id}.Start() ... &#34;</span> + 
+</span></span><span style="display:flex;"><span>                      <span style="color:#e6db74">$&#34;task.status is {task.Status},&#34;</span> +
+</span></span><span style="display:flex;"><span>                      <span style="color:#e6db74">$&#34;task.IsCompleted is {task.IsCompleted},&#34;</span> +
+</span></span><span style="display:flex;"><span>                      <span style="color:#75715e">/* $&#34;task.AsyncState is {task.AsyncState},&#34;+*/</span>
+</span></span><span style="display:flex;"><span>                      <span style="color:#e6db74">$&#34;ThreadId is {Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 只要不是在子线程（Thread）或者任务（Task）中执行的代码那么就会在主线程中执行</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// ThreadId is 1:只要是在主线程的代码那么其 ManagedThreadId 就是1</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+<li>
+<p><strong>输出结果：</strong></p>
+</li>
+<li>
+<p>![image-20200730015347148](C:\360极速浏览器X下载\books\C# 异步编程.assets\image-20200730015347148.png)</p>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="34-continuewith">3.4 ContinueWith</h4>
+<ul>
+<li>
+<p><strong>确保一个线程在之前线程完成之后再开始运行</strong></p>
+</li>
+<li>
+<p><strong>ContinueWith() 会返回一个新的 Task，该 Task 处于 ==WaitingForActivation== 状态，并且会在之前 Task 完成后自动运行</strong></p>
+<ul>
+<li>
+<p><strong>示例代码：</strong></p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">10</span>; i++) {
+</span></span><span style="display:flex;"><span>        Task&lt;<span style="color:#66d9ef">int</span>&gt; getUpTask = Task&lt;<span style="color:#66d9ef">int</span>&gt;.Run( () =&gt; {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> seed = <span style="color:#66d9ef">new</span> Random().Next(<span style="color:#ae81ff">100</span>);
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;{seed}: Task-{Task.CurrentId}: 起床啦！&#34;</span>+
+</span></span><span style="display:flex;"><span>                              <span style="color:#e6db74">$&#34;ThreadId:{Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> seed;
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Task Task&lt;int&gt;.ContinueWith(Action&lt;Task&lt;int&gt;,object?&gt; continuationAction,object? state);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 创建一个传递有状态信息并在目标 Task&lt;TResult&gt; 完成时执行的延续</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 确保了不同 Task 之间的运行顺序，也即保证了在 getUpTask 运行完之后再运行 ContinueWith 中的那个 Task</span>
+</span></span><span style="display:flex;"><span>        getUpTask.ContinueWith( (x) =&gt; {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(x == getUpTask);
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;{x.Result}: Task-{Task.CurrentId}: 起床结束！&#34;</span> 				+<span style="color:#e6db74">$&#34;ThreadId:{Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;{x.Result}: Task-{Task.CurrentId}: 刷牙洗脸！&#34;</span> 				+ <span style="color:#e6db74">$&#34;ThreadId:{Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+<li>
+<p><strong>输出结果：</strong></p>
+</li>
+<li>
+<p>![image-20200730024437975](C:\360极速浏览器X下载\books\C# 异步编程.assets\image-20200730024437975.png)</p>
+</li>
+</ul>
+</li>
+<li>
+<p>**使用 task.Wait() **</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">10</span>; i++) {
+</span></span><span style="display:flex;"><span>        Task&lt;<span style="color:#66d9ef">int</span>&gt; getUpTask = Task&lt;<span style="color:#66d9ef">int</span>&gt;.Run(() =&gt; {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> seed = <span style="color:#66d9ef">new</span> Random().Next(<span style="color:#ae81ff">100</span>);
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;{seed}: Task-{Task.CurrentId}: 起床啦！&#34;</span> +
+</span></span><span style="display:flex;"><span>                              <span style="color:#e6db74">$&#34;ThreadId:{Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> seed;
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        getUpTask.Wait();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Task task = Task.Run( () =&gt; {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 因为这里没有传入参数，我们只能通过 Task.Result 来获得上个任务的返回值</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 并且调用 Task.Result 属性会让此任务等待 Task 任务完成再执行</span>
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;{getUpTask.Result}: Task-{Task.CurrentId}: 起床结束！&#34;</span> +
+</span></span><span style="display:flex;"><span>                              <span style="color:#e6db74">$&#34;ThreadId:{Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;{getUpTask.Result}: Task-{Task.CurrentId}: 刷牙洗脸！&#34;</span> +
+</span></span><span style="display:flex;"><span>                              <span style="color:#e6db74">$&#34;ThreadId:{Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+<li>
+<p><strong>输出结果：</strong></p>
+<ul>
+<li>![image-20200730204744175](C:\360极速浏览器X下载\books\C# 异步编程.assets\image-20200730204744175.png)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>两者之间的区别：</strong></p>
+</li>
+</ul>
+<ol>
+<li>
+<p><strong>Wait() 阻塞当前线程进行等待，直到 Wait() 调用的那个任务执行完毕，而 ContinueWith() 则是不会阻塞当前线程进行等待</strong></p>
+</li>
+<li>
+<p><strong>Wait 是确保上面一个当前 Task 全部完成后，后续的任务的执行可以是新的线程进行的</strong></p>
+</li>
+<li>
+<p><strong>ContinueWith 是一个线程完成了一个任务后再去执行其他的任务</strong></p>
+</li>
+</ol>
+<ul>
+<li>
+<p><strong>仅使用 Task.Result</strong></p>
+<ul>
+<li>
+<p>示例代码：</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(){
+</span></span><span style="display:flex;"><span>    Task&lt;DateTime&gt; getUp = Task&lt;DateTime&gt;.Run(() =&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Thread.Sleep(10);</span>
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">$&#34;ThreadId:{Thread.CurrentThread.ManagedThreadId}&#34;</span> +
+</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">$&#34;Task-{Task.CurrentId}:起床啦！！！&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> DateTime.Now;
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Task.Run(() =&gt; {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">$&#34;ThreadId:{Thread.CurrentThread.ManagedThreadId}&#34;</span> +
+</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">$&#34;Task-{Task.CurrentId}:起床结束！！！&#34;</span>);
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">$&#34;ThreadId:{Thread.CurrentThread.ManagedThreadId}&#34;</span> +
+</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">$&#34;Task-{Task.CurrentId}:刷牙洗脸 ... &#34;</span>);
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">$&#34;ThreadId:{Thread.CurrentThread.ManagedThreadId}&#34;</span> +
+</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">$&#34;Task-{Task.CurrentId}:{getUp.Result}&#34;</span>);<span style="color:#75715e">// Task.Result 会阻塞线程</span>
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+<li>
+<p><strong>输出结果：</strong></p>
+<ul>
+<li>![image-20200731001622978](C:\360极速浏览器X下载\books\C# 异步编程.assets\image-20200731001622978.png)</li>
+</ul>
+</li>
+<li>
+<p><strong>说明：</strong></p>
+<ul>
+<li>观察程序输出结果，这两个 Task 是异步并行的关系，两者都不需要等待另外一方运行完成再执行；但是第二个 Task 中的最后一条语句，使用了别的 Task 的返回值，也即 Task.Result 属性，那么它就会等到前一个任务执行完成再执行，也即在程序输出结果中输出的时间那一行永远不可能出现在 起床啦！！！ 语句前面</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="35-异常处理">3.5 异常处理</h4>
+<ul>
+<li><strong>多线程中一个线程是无法捕获另外一个线程中发生的异常的，也即主线程是无法捕获子线程的异常的，除非碰到了 ==Task.Wait()== 方法：</strong>
+<ul>
+<li>
+<p>多个线程中的所有的异常被包裹在 ==AggregateException== 中</p>
+</li>
+<li>
+<p>可以通过使用 AggregateException 异常实例中的：</p>
+</li>
+<li>
+<p>InnerException 依次获取所有线程上的异常，以及 Handle() 方法处理异常</p>
+</li>
+<li>
+<p><strong>示例代码：</strong></p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 多线程中的异常处理</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;args&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args) {
+</span></span><span style="display:flex;"><span>    Task&lt;DateTime&gt; getUp = Task&lt;DateTime&gt;.Run(() =&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Exception(<span style="color:#e6db74">&#34;ouuried a exception ... &#34;</span>);
+</span></span><span style="display:flex;"><span>        Thread.Sleep(<span style="color:#ae81ff">10</span>);
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">$&#34;ThreadId:{Thread.CurrentThread.ManagedThreadId}&#34;</span> +
+</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">$&#34;Task-{Task.CurrentId}:起床啦！！！&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> DateTime.Now;
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//多线程中一个线程是无法捕获另外一个线程中发生的异常的，也即主线程是无法捕获子线程的异常的，除非碰到了 == Task.Wait() == 方法</span>
+</span></span><span style="display:flex;"><span>    getUp.Wait();
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Unhandled exception. System.AggregateException: One or more errors occurred. (ouuried a exception ... )</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+</ul>
+</li>
+</ul>
+<ol>
+<li>
+<p><strong>通过 InnerExceptions 处理：</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 多个 Task 异常处理之 catch</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;args&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(){
+</span></span><span style="display:flex;"><span>    Task[] getUps = <span style="color:#66d9ef">new</span> Task[<span style="color:#ae81ff">10</span>];
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">10</span>; i++) {
+</span></span><span style="display:flex;"><span>        Thread.Sleep(<span style="color:#ae81ff">100</span>);
+</span></span><span style="display:flex;"><span>        getUps[i] = Task.Run(() =&gt; {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Exception(i.ToString());
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// void Task.WaitAll(params Task[] tasks) ：等到提供的所有 Task 对象完成执行过程</span>
+</span></span><span style="display:flex;"><span>        Task.WaitAll(getUps);
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">catch</span> (AggregateException ae) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> item <span style="color:#66d9ef">in</span> ae.InnerExceptions) {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(item.Message);<span style="color:#75715e">// 这里的打印结果不保证是按顺序输出1到10，因为 Task 是异步执行的</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>输出结果：有多种可能，是不可控的，因为 Task 的异步执行的</strong></li>
+<li>![image-20200731193733340](C:\360极速浏览器X下载\books\C# 异步编程.assets\image-20200731193733340.png)</li>
+</ul>
+</li>
+<li>
+<p><strong>使用 Handle 处理：</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 多个 Task 异常处理之 catch</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;args&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(){
+</span></span><span style="display:flex;"><span>	Task[] getUps = <span style="color:#66d9ef">new</span> Task[<span style="color:#ae81ff">10</span>];
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">10</span>; i++) {
+</span></span><span style="display:flex;"><span>        Thread.Sleep(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>        getUps[i] = Task.Run(() =&gt; {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Exception(i.ToString());
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>        Task.WaitAll(getUps);
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">catch</span> (AggregateException ae) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// void AggregateException.Handle(Func&lt;Exception,bool&gt; predicate)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 在每个由此 AggregateException 包含的 Exception 上调用处理程序</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Handle 的参数接收的是带 Exception 参数返回值为 bool 类型的方法</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 并且返回 true 则不处理 Task 中的异常，返回 false 则表示处理异常</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Handle 处理的是 InnerExceptions 中的异常，因此这里的 x 其实就是 InnerExceptions</span>
+</span></span><span style="display:flex;"><span>        ae.Handle(x =&gt; {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(x.Message);
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//return (x as AggregateException) == null;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//return (x is AggregateException);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+<li>
+<p><strong>此外，也可以直接使用：</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// Task 异常属性</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;args&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(){
+</span></span><span style="display:flex;"><span>	Task getup = Task&lt;<span style="color:#66d9ef">int</span>&gt;.Run(() =&gt; {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">$&#34;at await in GetUp() with thread {Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (DateTime.Now.Ticks % <span style="color:#ae81ff">2</span> == <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> LCEexception();
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> (!getup.IsCompleted) { <span style="color:#75715e">// 异常只会在 Task 完成之后被收集</span>
+</span></span><span style="display:flex;"><span>        Console.WriteLine(getup.Status);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (getup.IsFaulted) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> e <span style="color:#66d9ef">in</span> getup.Exception.InnerExceptions) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (e <span style="color:#66d9ef">is</span> LCEexception) {
+</span></span><span style="display:flex;"><span>                Console.WriteLine((e <span style="color:#66d9ef">as</span> LCEexception).Name);
+</span></span><span style="display:flex;"><span>            } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (e <span style="color:#66d9ef">is</span> NotImplementedException) {
+</span></span><span style="display:flex;"><span>                Console.WriteLine(<span style="color:#e6db74">&#34;Not Implement.&#34;</span>);
+</span></span><span style="display:flex;"><span>            } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>                Console.WriteLine(e.Message);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>
+<p>使用注意事项：</p>
+<ul>
+<li>throw：
+<ul>
+<li>异常会带来较大的资源开销（性能损耗），所以要尽可能避免异常被抛出（不是不写 throw exception 的代码）</li>
+<li>不要使用 Exception 作为分支判断条件</li>
+<li>尽可能的使用具体的、.NET 现有的异常</li>
+</ul>
+</li>
+<li>try &hellip; catch：
+<ul>
+<li>不知道怎么处理的，就不要处理</li>
+<li>不要 catch 之后，什么都不做（或者就包裹一下），直接 throw</li>
+<li>是在程序入口（顶层方法）处 catch 未捕获的异常（看情况）</li>
+</ul>
+</li>
+<li>finally：
+<ul>
+<li>如果仅仅是为了释放资源，推荐使用 using 代码块</li>
+<li>使用 using 时注意和 try-catch 的搭配</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="35-终止某个任务">3.5 终止某个任务</h4>
+<ul>
+<li>
+<p><strong>只需要按部就班的书写如下代码即可：</strong></p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// Task 的取消</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;args&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// System.Threading.CancellationTokenSource:通知 CancelationToken，告知其应被取消</span>
+</span></span><span style="display:flex;"><span>    CancellationTokenSource source = <span style="color:#66d9ef">new</span> CancellationTokenSource();
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// readonly struct System.Threading.CancellationToken：传播有关应取消操作的通知</span>
+</span></span><span style="display:flex;"><span>    CancellationToken token = source.Token;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Task&lt;DateTime&gt; getup = Task&lt;DateTime&gt;.Run( () =&gt; {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// void CancellationToken.ThrowIfCancellationRequest()：如果已请求取消此标记，则引发 OperationCanceledException</span>
+</span></span><span style="display:flex;"><span>        token.ThrowIfCancellationRequested();<span style="color:#75715e">// 如果 Task 被 Cancel()，则会抛出异常</span>
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">$&#34;Task-{Task.CurrentId}:起床啦！！&#34;</span>+
+</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">$&#34;ThreadId:{Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> DateTime.Now;
+</span></span><span style="display:flex;"><span>    },token);<span style="color:#75715e">// 传入 token 指令，确保 Cancel 通知能被侦听</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// void CancellationTokenSource.Cancel()：传达取消请求</span>
+</span></span><span style="display:flex;"><span>    source.Cancel();<span style="color:#75715e">// 使用 source 进行 Cancel</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>        getup.Wait();<span style="color:#75715e">// 只有在 Wait() 时才能捕获异常</span>
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">catch</span> (AggregateException ae) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 使用 Handle() 方法进行处理</span>
+</span></span><span style="display:flex;"><span>        ae.Handle( ie =&gt; {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;Canceled?&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>;<span style="color:#75715e">// 表示已经成功处理，不需要再抛出异常；return false 则会抛出异常</span>
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Serializable]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">internal</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LCEexception</span> : Exception {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; } = <span style="color:#e6db74">&#34;zlim&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> LCEexception() {
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> LCEexception(<span style="color:#66d9ef">string</span> message) : <span style="color:#66d9ef">base</span>(message) {
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> LCEexception(<span style="color:#66d9ef">string</span> message, Exception innerException) : <span style="color:#66d9ef">base</span>(message, innerException) {
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> LCEexception(SerializationInfo info, StreamingContext context) : <span style="color:#66d9ef">base</span>(info, context) {
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+<li>
+<p><strong>除了在 Task 内部使用 token.ThrowIfCancellationRequested(); 抛出异常，还可以使用：</strong></p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>Task&lt;DateTime&gt; getup = Task&lt;DateTime&gt;.Run( () =&gt; {
+</span></span><span style="display:flex;"><span>	token.Register( () =&gt; { Console.WriteLine(<span style="color:#e6db74">&#34;registered cancel handle&#34;</span>);});
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">$&#34;Task-{Task.CurrentId}:起床啦！！&#34;</span>+
+</span></span><span style="display:flex;"><span>                      <span style="color:#e6db74">$&#34;ThreadId:{Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> DateTime.Now;
+</span></span><span style="display:flex;"><span>},token);<span style="color:#75715e">// 传入 token 指令，确保 Cancel 通知能被侦听</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 并且需要在 Cancel() 方法之前加上</span>
+</span></span><span style="display:flex;"><span>Thread.Sleep(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>source.Cancel();<span style="color:#75715e">// 使用 source 进行 Cancel</span>
+</span></span></code></pre></div></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-异步方法">4. 异步方法</h3>
+<ul>
+<li>
+<p>**实现：在方法声明时加上 ==async==，在方法内部使用 ==await== **</p>
+</li>
+<li>
+<p><strong>被 async 标记的方法被称为异步方法，async 和 await 必须成对出现，不然会：</strong></p>
+</li>
+<li>
+<p>报警告：只有 async 没有 await</p>
+<ul>
+<li>报编译错误：只有 await 没有 async</li>
+</ul>
+</li>
+</ul>
+<h4 id="41-异步方法的分类">4.1 异步方法的分类</h4>
+<ul>
+<li>
+<p><strong>异步方法分为两种：</strong></p>
+<p><strong>1. ==返回 void 或 Task==：异步方法一直同步运行，直到遇到 await 关键字：</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 异步方法</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;args&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args) {
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">$&#34;before async-1 with thread {Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">$&#34;before async-2 with thread {Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    GetUp();
+</span></span><span style="display:flex;"><span>    Console.WriteLine();
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;in Main() after invoking GetUp()&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">10</span>; i++) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// GetUp() 里 await部分的运行，会打乱这里代码的同步运行，也即 GetUp() 里 await部分中的代码会与 for 循环中的代码异步运行</span>
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">$&#34;after async-{3 + i} with thread {Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">void</span> GetUp() {
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;into GetUp&#34;</span>);
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">$&#34;before await-1 with thread {Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">$&#34;before await-2 with thread {Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// await 之间的代码，在主线程上运行</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine();
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;is going to await ... &#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// await 开始异步运行，方法运行到这时会从这里开始返回方法调用者处执行代码</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> Task.Run(() =&gt; {
+</span></span><span style="display:flex;"><span>        Console.WriteLine();
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">$&#34;in await with thread {Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>        Console.WriteLine();
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine();
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;after await:&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 直到 await 中内容执行完毕，才开始（但不是立即或同步）执行 await 之后的代码</span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">$&#34;after await-3 with thread {Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">$&#34;after await-4 with thread {Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>
+<p><strong>输出结果：</strong></p>
+<ul>
+<li>![image-20200801011914452](C:\360极速浏览器X下载\books\C# 异步编程.assets\image-20200801011914452.png)</li>
+</ul>
+</li>
+<li>
+<p><strong>说明：</strong></p>
+<ul>
+<li>从 await 开始，代码开始分叉：也即开始异步执行，但不一定是新开线程：</li>
+<li>一边执行 await 后的表达式（Task）</li>
+<li>一边返回到方法调用者处继续执行</li>
+</ul>
+</li>
+<li>
+<p><strong>实质上，await 采用的是 Task 的 ContinueWith() 机制：await 之后的方法内的代码，被 await Task 执行完毕后调用</strong></p>
+<ul>
+<li>非异步方法：只有 Task 异步执行</li>
+<li>调用 Wait() 的非异步方法：Wait() 会阻塞当前线程进行等待</li>
+</ul>
+</li>
+<li>
+<p><strong>异步方法中的 void 可以被直接替换成 Task（推荐），以便于该方法进一步被 await 传递</strong></p>
+<ul>
+<li>void 通常作为顶级（top-level）方法使用</li>
+</ul>
+</li>
+<li>
+<p><strong>调用 Wait() 的非异步方法：</strong></p>
+<ul>
+<li>
+<p><strong>await 与 task.wait() 的区别：</strong></p>
+</li>
+<li>
+<p><strong>如果是 wait() 那么 Task 后的语句是运行在主线程中的，并且 Task 后的语句会跟着 Task 后面执行，也即不会与 Main 方法中调用 GetUpWait 方法后的语句形成异步执行的关系</strong></p>
+</li>
+<li>
+<p>示例代码：</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"></code></pre></div></li>
+</ul>
+<p>public static void Main(string[] args) {
+Console.WriteLine($&ldquo;before async-1 with thread {Thread.CurrentThread.ManagedThreadId}&rdquo;);
+Console.WriteLine($&ldquo;before async-2 with thread {Thread.CurrentThread.ManagedThreadId}&rdquo;);</p>
+<pre><code>  //GetUp();
+  GetUpWait();
+  Console.WriteLine();
+  Console.WriteLine(&quot;in Main() after invoking GetUp()&quot;);
+  for (int i = 0; i &lt; 10; i++) {
+      // GetUp() 里 await部分的运行，会打乱这里代码的同步运行，也即 GetUp() 里 await部分中的代码会与 for 循环中的代码异步运行
+      Console.WriteLine($&quot;after async-{3 + i} with thread {Thread.CurrentThread.ManagedThreadId}&quot;);
+  }
+</code></pre>
+<p>}</p>
+<p>//如果是 wait 那么 Task 后面的语句是运行在主线程中的，并且 Task 后面的语句会跟着 Task 执行</p>
+<p>public static void GetUpWait() {
+Console.WriteLine(&ldquo;into GetUp&rdquo;);
+Console.WriteLine($&ldquo;before await-1 with thread {Thread.CurrentThread.ManagedThreadId}&rdquo;);
+Console.WriteLine($&ldquo;before await-2 with thread {Thread.CurrentThread.ManagedThreadId}&rdquo;);</p>
+<pre><code>  Console.WriteLine();
+  Console.WriteLine(&quot;is going to await ... &quot;);
+  Task task =  Task.Run(() =&gt; {
+      Console.WriteLine();
+      Console.WriteLine($&quot;in await with thread {Thread.CurrentThread.ManagedThreadId}&quot;);
+      Console.WriteLine();
+  });
+  task.Wait();
+
+  Console.WriteLine();
+  Console.WriteLine(&quot;after task.Wait():&quot;);
+  Console.WriteLine($&quot;after await-3 with thread {Thread.CurrentThread.ManagedThreadId}&quot;);
+  Console.WriteLine($&quot;after await-4 with thread {Thread.CurrentThread.ManagedThreadId}&quot;);
+</code></pre>
+<p>}</p>
+<pre tabindex="0"><code>
+- **输出结果：**
+
+- ![image-20200801012617571](C:\360极速浏览器X下载\books\C# 异步编程.assets\image-20200801012617571.png)
+</code></pre></li>
+</ul>
+<ol start="2">
+<li>
+<p><strong>==返回 Task<!-- raw HTML omitted -->==</strong></p>
+<ul>
+<li>
+<p><strong>返回值被 Task 包裹，写成 Task<!-- raw HTML omitted -->，T 指方法体内声明返回的类型</strong></p>
+</li>
+<li>
+<p><strong>示例代码：</strong></p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">int</span>&gt; Get() {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> x = <span style="color:#66d9ef">await</span> Task&lt;<span style="color:#66d9ef">int</span>&gt;.Run(() =&gt; {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">$&#34;in await with thread {Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Random().Next();
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    x = x &gt; <span style="color:#ae81ff">100</span> ? <span style="color:#ae81ff">100</span> : x;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">$&#34;after await-3 with thread {Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">$&#34;after await-4 with thread {Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 方法体内，返回的是 int</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> x;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+<li>
+<p><strong>调试需要技巧：</strong></p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args) {
+</span></span><span style="display:flex;"><span>    Wrap();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">10</span>; i++) {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">$&#34;after async-{3 + i} with thread {Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">void</span> Wrap() {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 不能直接使用 await 获取 Get() 的值，而是调用它，让它先跑起来</span>
+</span></span><span style="display:flex;"><span>    Task&lt;<span style="color:#66d9ef">int</span>&gt; task = Get();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 运行 Get()，碰到里面的 await 后，控制权返回到这里</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 于是 Get() 中的 Task 与以下语句开始异步执行（节省就节省在这一点）</span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">$&#34;after invoke Get() with thread {Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">$&#34;do something ... with thread {Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// int y = task.Result;    // 阻塞当前线程进行等待：也即只能往下走</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 但是 await 的话往下往上走都可以，因为它是异步执行的</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 直到 await 调用 Get() 取值</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果 Get() 已经执行完毕,则马上取值;否则还得再把控制权往上抛</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> x = <span style="color:#66d9ef">await</span> task;     <span style="color:#75715e">// 不阻塞当前线程，当前线程和 Task 并发/异步运行：即会到主线程调用 Wrap 方法后面的代码继续走</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果是同步运行则会继续执行下面的代码，但是 await 是异步运行的</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 只有上述 await task 中的 task 执行完毕后，才会执行异步方法 Wrap 中剩下的内容，也即下列代码：</span>
+</span></span><span style="display:flex;"><span>    Thread.Sleep(<span style="color:#ae81ff">50</span>);
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">$&#34;after Thread-{Thread.CurrentThread.ManagedThreadId}.Sleep(50) ... &#34;</span>);
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;in Wrap():&#34;</span> + x + <span style="color:#e6db74">&#34;with thread {Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+<li>
+<p><strong>特别注意：不能直接 int x = Get().Result 或者 int x = await Get() 取值</strong></p>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="5-任务并行库task-parallel-library">5 <strong>任务并行库（Task Parallel Library）</strong></h3>
+<ul>
+<li>.NET 中 System.Threading 和 System.Threading.Tasks 名称空间下的类库</li>
+<li>简化异步/并行开发，在底层实现：
+<ul>
+<li>动态调整并行规模</li>
+<li>处理分区</li>
+<li>线程（池）调用（器）等</li>
+</ul>
+</li>
+</ul>
+<h4 id="51-基于-task-的并行">5.1 基于 Task 的并行</h4>
+<ul>
+<li>
+<p>**最简单的例子，Parallel.Invoke() ： **</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#75715e">/// 基于 Task 的并行</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;args&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">5</span>; i++) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// class System.Threading.Tasks.Parallel:提供对并行循环的和区域的支持</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// void Parallel.Invoke(params Action[] actions)：尽可能并行执行提供的每个操作</span>
+</span></span><span style="display:flex;"><span>        Parallel.Invoke( () =&gt; {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(i);
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;task-{Task.CurrentId} begin:&#34;</span>);
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;task-{Task.CurrentId} in thread-{Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;task-{Task.CurrentId} end.&#34;</span>);
+</span></span><span style="display:flex;"><span>        },() =&gt; {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(i);
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;task-{Task.CurrentId} begin:&#34;</span>);
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;task-{Task.CurrentId} in thread-{Thread.CurrentThread.ManagedThreadId}&#34;</span>);
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;task-{Task.CurrentId} end.&#34;</span>);
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    输出结果：并不是10个任务就开了10的线程，但是2个任务循环5次就有10个任务：这10个任务的执行时完全并行的，类似于一条马路中划分出了多条道路，不同任务之间是并行执行的，但是同一任务中是按照代码的编写顺序执行的，也即多条道路一起执行，但是每条道路中是按顺序一辆车一辆车的走
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-1 begin:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-2 begin:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-1 in thread-4
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-2 in thread-1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-1 end.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-2 end.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-4 begin:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-3 begin:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-4 in thread-1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-3 in thread-4
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-3 end.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-4 end.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-6 begin:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-6 in thread-1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-6 end.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-5 begin:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-5 in thread-5
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-5 end.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                3
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-8 begin:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-8 in thread-1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-8 end.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                3
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-7 begin:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-7 in thread-5
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-7 end.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                4
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                4
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-10 begin:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-10 in thread-1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-10 end.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-9 begin:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-9 in thread-5
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                task-9 end.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	*/</span>
+</span></span></code></pre></div></li>
+<li>
+<p>Parallel 的其他方法</p>
+<ul>
+<li>
+<p>For 循环</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>Parallel.For(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">10</span>, x =&gt; Console.WriteLine(x));
+</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>ForEach 循环</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>Parallel.ForEach(Enumerable.Range(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">10</span>), x =&gt; Console.WriteLine(x));
+</span></span></code></pre></div></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>引入线程数组：Task[]</strong></p>
+<ul>
+<li>
+<p>WaitAll / WaitAny</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Task.WaitAll(<span style="color:#66d9ef">params</span> Task[] tasks):<span style="color:#960050;background-color:#1e0010">等待提供的所有</span> Task <span style="color:#960050;background-color:#1e0010">对象完成执行过程</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> Task.WaitAny(<span style="color:#66d9ef">params</span> Task[] tasks):<span style="color:#960050;background-color:#1e0010">等待提供的任一</span> Task <span style="color:#960050;background-color:#1e0010">对象完成执行过程</span>
+</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>WhenAll / WhenAny</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">（可等待）</span>Task Task.WhenAll(System.Collections.Generic.IEnumerable&lt;Task&gt; tasks):
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">创建一个任务，该任务将在可枚举集合中的所有</span> Task <span style="color:#960050;background-color:#1e0010">对象都已完成时完成</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">使用情况：</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">await</span> WhenAll(...);
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">（可等待）</span>Task&lt;Task&gt; Task.WhenAny(System.Collections.Generic.IEnumerable&lt;Task&gt; tasks):
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">任何提供的任务已完成时，创建将完成的任务</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">使用情况：</span>
+</span></span><span style="display:flex;"><span>	Task x = <span style="color:#66d9ef">await</span> WhenAny(...);
+</span></span></code></pre></div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>对比下面代码，体会 await 的 continuation：</strong></p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 引入线程数组：Task[]</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;args&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args) {
+</span></span><span style="display:flex;"><span>    GetUpTasks().Wait();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">async</span> Task GetUpTasks() {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//await Task.Run(() =&gt; Console.WriteLine(&#34;洗脸&#34;));</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//await Task.Run(() =&gt; Console.WriteLine(&#34;刷牙&#34;));</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//await Task.Run(() =&gt; Console.WriteLine(&#34;吃早餐&#34;));</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//await Task.Run(() =&gt; Console.WriteLine(&#34;背单词&#34;));</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Task[] tasks = {
+</span></span><span style="display:flex;"><span>        Task.Run( () =&gt; Console.WriteLine(<span style="color:#e6db74">&#34;洗脸&#34;</span>)),
+</span></span><span style="display:flex;"><span>        Task.Run( () =&gt; Console.WriteLine(<span style="color:#e6db74">&#34;刷牙&#34;</span>)),
+</span></span><span style="display:flex;"><span>        Task.Run( () =&gt; Console.WriteLine(<span style="color:#e6db74">&#34;吃早餐&#34;</span>)),
+</span></span><span style="display:flex;"><span>        Task.Run( () =&gt; Console.WriteLine(<span style="color:#e6db74">&#34;背单词&#34;</span>)),
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//（可等待）Task Task.WhenAll(System.Collections.Generic.IEnumerable &lt; Task &gt; tasks):</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//创建一个任务，该任务将在可枚举集合中的所有 Task 对象都已完成时完成</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//使用情况：await WhenAll(...);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> Task.WhenAll(tasks);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            执行效果是无序的：并发执行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                背单词
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                洗脸
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                刷牙
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                吃早餐
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            */</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+</ul>
+</li>
+</ul>
+<h4 id="52-并行-linqparallel-linqplinq">5.2 并行 Linq：Parallel LINQ（PLINQ）</h4>
+<h3 id="6-最佳实践">6. 最佳实践</h3>
+<ul>
+<li><strong>使用异步/并行的副作用（side effect）：</strong>
+<ol>
+<li>增加代码的复杂性（尤其是 bug 调试时）</li>
+<li>异步/并行的切换需要消耗额外的资源</li>
+</ol>
+</li>
+<li><strong>简单理解：</strong>
+<ul>
+<li>锁、死锁（DeadLock）、资源争夺（race condition）</li>
+<li>线程安全（Thread Safty）</li>
+<li>天下没有免费的午餐</li>
+</ul>
+</li>
+<li><strong>总是在最后再考虑异步/并行：（尤其是 B/S 架构：因为 B/S 架构天生就是多线程的）</strong>
+<ul>
+<li>确定性能瓶颈</li>
+<li>确定该瓶颈可以通过异步/并行的方法解决</li>
+</ul>
+</li>
+<li><strong>考虑开销（代码复杂性和额外调度）和收益</strong></li>
+</ul>
+<h2 id="一起帮源栈-aspnet培训反射与特性">一起帮·源栈-ASP.NET培训：反射与特性</h2>
+<h3 id="1-反射reflection">1. 反射（Reflection）</h3>
+<ul>
+<li>
+<p><strong>在运行时动态获取/改变.NET程序的 Assembly、Module 和 Type</strong></p>
+</li>
+<li>
+<p><strong>先看一个最简单的反射：</strong></p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> ReflectAndAttribute{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args){
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 运行时</span>
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;&#34;</span>.GetType().Module);
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// System.Private.CoreLib.dll</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 编译时</span>
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#66d9ef">typeof</span>(Int32).Assembly);
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+<li>
+<p>返回的 Type 对象，实现了 IReflect，学习：</p>
+<ul>
+<li>Is/Has</li>
+<li>Get/Set</li>
+<li>静态/实例</li>
+<li>运算符重载</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-assemblymodule-和-type">2. Assembly、Module 和 Type</h3>
+<ul>
+<li><strong>简单理解：Assembly &gt; Module &gt; Type &gt; Field/Method/Properties</strong></li>
+<li><strong>Assembly 是 .NET 中最小的可执行单元，物理上对应着：项目（开发时），.dll 和 .exe（发布时）文件</strong></li>
+<li><strong>其中包括：</strong>
+<ul>
+<li>manifest（清单）</li>
+<li>Type metadata：F12 查看已编译类库时看到的东西</li>
+<li>Microsoft Intermediate Language（MSIL）code：Module</li>
+<li>其他 resources：如图片/配置/说明文件等</li>
+</ul>
+</li>
+<li><strong>其中，manifest 是 Assembly 区分与 Module 的关键标志（Module 没有manifest）</strong>
+<ul>
+<li>Manifest 描述了 Assembly 中又多少元素，元素之间如何关联，以及版本号等，Assembly 在运行时就按照 manifest 加载相关的元素</li>
+</ul>
+</li>
+<li><strong>所以，Assembly 是：</strong>
+<ul>
+<li>自描述的（self-describing）</li>
+<li>可重用的（reusable）：dll 可以到处被引用使用</li>
+<li>可版本控制的（versionable）</li>
+</ul>
+</li>
+<li>![image-20200802153216476](C:\360极速浏览器X下载\books\C# 异步编程.assets\image-20200802153216476.png)</li>
+<li>理解：
+<ul>
+<li>运行时（Runtime）</li>
+<li>.NET CLR 和 MSIL 是基础：
+<ul>
+<li>一个 Assembly 中可以包含多个不同语言编写的 Module</li>
+<li>.NET core 是跨平台的</li>
+</ul>
+</li>
+<li>Module 中就包含：
+<ul>
+<li>Types：也即 C# 中类、delegate、enum 等更具体的实现</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-反射-调用方法">3. 反射-调用方法</h3>
+<ul>
+<li>
+<p><strong>实用中的反射</strong></p>
+<ul>
+<li>在类（及其成员）和字符串之间转换：
+<ul>
+<li>ORM：生成 SQL 查询字符串，以及根据查询结果返回对象</li>
+<li>配置文件制定类名，动态加载</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>插入：条件编译符的讲解</strong></p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#75715e">#define word // 只能在当前文件中生效</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 条件编译符(Condition Complier)：#if ... #elif ... #endif：编译时就选择哪一条语句编译</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;args&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main1(<span style="color:#66d9ef">string</span>[] args) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#if word</span>
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;This is XML.&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;This is Memory.&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span>endif
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#if XML // 条件编译符：使用时可以在 using 前面写 #define XML 来选择编译那条语句（但是这种写法需要修改源码）：这种写法的作用域为当前文件</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 或者选择编辑项目属性，在生成 -&gt; 常规 -&gt; 条件编译和符号中填写 XML 或者 Memory（这种写法如果需要更换选择则需要重新编译项目）：这种写法的作用域是整个项目</span>
+</span></span><span style="display:flex;"><span>            IRepoistory&lt;Arcticle&gt; repo = <span style="color:#66d9ef">new</span> XArticleRepository&lt;Arcticle&gt;();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#elif Memory</span>
+</span></span><span style="display:flex;"><span>            IRepoistory&lt;Arcticle&gt; repo = <span style="color:#66d9ef">new</span> XRepository&lt;Arcticle&gt;();
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span>endif
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+<li>
+<p>文件中的声明作用域只能是当前文件，还可以在整个项目范围内声明</p>
+<ul>
+<li>![image-20200805173009134](C:\360极速浏览器X下载\books\C# 异步编程.assets\image-20200805173009134.png)</li>
+<li>编译符的问题：一旦编译，无法更改！</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>更灵活的方式：使用（配置）文件制定要使用的类</strong></p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">string</span> path = Path.Join(Environment.CurrentDirectory,<span style="color:#e6db74">&#34;config.txt&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">string</span> classType = File.ReadAllText(path);
+</span></span></code></pre></div></li>
+<li>
+<p>其关键：通过字符串获得类</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#75715e">// 如果找不到这个类，就返回 null</span>
+</span></span><span style="display:flex;"><span>Type target = Type.GetType(<span style="color:#e6db74">&#34;ReflectAndAttribute.Student&#34;</span>);  <span style="color:#75715e">// 必须是类的全类名，也即 Assembly 中的名称，一般为名称空间名+类名（注意是类名而不是类文件名，在C#中文件名通常就是类名）</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//Type complied = typeof(Student);</span>
+</span></span></code></pre></div><ul>
+<li>![image-20200805175714692](C:\360极速浏览器X下载\books\C# 异步编程.assets\image-20200805175714692.png)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>反射：调用方法</strong></p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 反射：调用方法</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;args&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/*string path = Path.Join(Environment.CurrentDirectory,&#34;config.txt&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            string classType = File.ReadAllText(path);*/</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果找不到这个类，就返回 null</span>
+</span></span><span style="display:flex;"><span>    Type target = Type.GetType(<span style="color:#e6db74">&#34;ReflectAndAttribute.Student&#34;</span>);  <span style="color:#75715e">// 必须是类的全类名，也即 Assembly 中的名称，一般为名称空间名+类名（注意是类名而不是类文件名，在C#中文件名通常就是类名）</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//Type complied = typeof(Student);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// GetConstructor(Type[] types) 获取构造函数信息；Invoke(Object []) 调用构造函数并传入参数</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 这里表示调用 Student 类中的无参构造函数，返回类的实例</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">object</span> objStu = target.GetConstructor(<span style="color:#66d9ef">new</span> Type[] { }).Invoke(<span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 这里表示调用 Student 中一个参数为 string 类型的构造函数，并传入参数 &#34;Zlim&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">object</span> objStu2 = target.GetConstructor(<span style="color:#66d9ef">new</span> Type[] { <span style="color:#66d9ef">typeof</span>(<span style="color:#66d9ef">string</span>) }).Invoke(<span style="color:#66d9ef">new</span> <span style="color:#66d9ef">object</span>[] { <span style="color:#e6db74">&#34;Zlim&#34;</span>});
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 类似于：Student s = new Student(&#34;Zlim&#34;);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//objStu.Greet(); --- 不行，因为 objStu 是 object 类型的，而不是 Student 类型</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 调用类的成员（方法）：Invoke 第一参数是调用哪个实例的方法，第二个参数是传入调用方法的参数值，如果方法不需要传参则写 null</span>
+</span></span><span style="display:flex;"><span>    target.GetMethod(<span style="color:#e6db74">&#34;Greet&#34;</span>).Invoke(objStu,<span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>上述方法还存在一个问题是无法获得指定类型的实例（只能是 object），不利于进一步的开发，所以通常情况下，我们使用接口（或基类）</p>
+<ul>
+<li>
+<p><strong>Student.cs：</strong></p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Collections.Generic;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Text;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @author zlim
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @create 2020/8/5 17:33:30
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> ReflectAndAttribute {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IPerson</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">void</span> Greet();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Student</span> : IPerson {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> Student() {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;This is Class Student&#39;s Constructor without parameter.&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> Student(<span style="color:#66d9ef">string</span> Name) {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">$&#34;This is Class Student&#39;s Constructor with parameter:{Name}.&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Greet() {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;Hi there~&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Teacher</span> : IPerson {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Greet() {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;Hello,Students.&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+<li>
+<p><strong>Program.cs</strong></p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 反射：调用方法2</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;args&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> path = Path.Join(Environment.CurrentDirectory, <span style="color:#e6db74">&#34;config.txt&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> classType = File.ReadAllText(path);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Type target = Type.GetType(classType);
+</span></span><span style="display:flex;"><span>    IPerson person = <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//person = (IPerson)target.GetConstructor(new Type[] { typeof(string) }).Invoke(new object[] { &#34;ZLim&#34;});</span>
+</span></span><span style="display:flex;"><span>        person = target.GetConstructor(<span style="color:#66d9ef">new</span> Type[] { <span style="color:#66d9ef">typeof</span>(<span style="color:#66d9ef">string</span>) }).Invoke(<span style="color:#66d9ef">new</span> <span style="color:#66d9ef">object</span>[] { <span style="color:#e6db74">&#34;ZLim&#34;</span> }) <span style="color:#66d9ef">as</span> IPerson; 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">catch</span> (Exception e) {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;Something wrong happend .... &#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    person.Greet();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p><strong>反射“无视”访问修饰符：</strong></p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args) {
+</span></span><span style="display:flex;"><span>    Type tStu = <span style="color:#66d9ef">typeof</span>(Student);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 必须加上 BindingFlags 的两个参数</span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(tStu.GetField(<span style="color:#e6db74">&#34;_age&#34;</span>,BindingFlags.NonPublic | BindingFlags.Instance).GetValue(<span style="color:#66d9ef">new</span> Student()));<span style="color:#75715e">// 23</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Student</span>  {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> _age = <span style="color:#ae81ff">23</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p><strong>反射注意事项：</strong></p>
+<ul>
+<li>反射中大量使用了字符串，error prone</li>
+<li>反射比较慢，因为没有编译优化，需要在 metadata 中查找</li>
+</ul>
+</li>
+<li>
+<p><strong>插入：枚举与位运算</strong></p>
+<ul>
+<li>
+<p>区别于 &amp;&amp; 和 || ，在进行逻辑位运算时，&amp; 和 | 不会进行短路操作</p>
+</li>
+<li>
+<p>还可以在两个二进制值之间进行计算</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>Console.WriteLine(<span style="color:#ae81ff">1</span>| <span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>Console.WriteLine(<span style="color:#ae81ff">2</span> | <span style="color:#ae81ff">4</span>);
+</span></span><span style="display:flex;"><span>Console.WriteLine(<span style="color:#ae81ff">1</span> &amp; <span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>Console.WriteLine(<span style="color:#ae81ff">2</span> &amp; <span style="color:#ae81ff">4</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Console.WriteLine(((<span style="color:#ae81ff">1</span> | <span style="color:#ae81ff">2</span>) &amp; <span style="color:#ae81ff">1</span>) == <span style="color:#ae81ff">1</span>);<span style="color:#75715e">// true</span>
+</span></span><span style="display:flex;"><span>Console.WriteLine(((<span style="color:#ae81ff">1</span> | <span style="color:#ae81ff">2</span>) &amp; <span style="color:#ae81ff">2</span>) == <span style="color:#ae81ff">2</span>);<span style="color:#75715e">// true</span>
+</span></span></code></pre></div></li>
+<li>
+<p>以上仅对2的整数次方值有效</p>
+</li>
+</ul>
+</li>
+<li>
+<p>演示权限管理系统：记录用户的所有权限</p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args) {
+</span></span><span style="display:flex;"><span>        Student s = <span style="color:#66d9ef">new</span> Student();
+</span></span><span style="display:flex;"><span>        s.AddRole(Role.Student);
+</span></span><span style="display:flex;"><span>        Console.WriteLine(s.Roles);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Teacher t = <span style="color:#66d9ef">new</span> Teacher();
+</span></span><span style="display:flex;"><span>        t.AddRole(Role.Teacher);
+</span></span><span style="display:flex;"><span>        t.AddRole(Role.TeamLeader);
+</span></span><span style="display:flex;"><span>        Console.WriteLine(t.Roles);<span style="color:#75715e">// Teacher, TeamLeader</span>
+</span></span><span style="display:flex;"><span>        t.Roles = t.Roles ^ Role.TeamLeader;<span style="color:#75715e">// 移除某权限：异或该权限即可</span>
+</span></span><span style="display:flex;"><span>        Console.WriteLine(t.Roles);<span style="color:#75715e">// Teacher</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Flags]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> Role {
+</span></span><span style="display:flex;"><span>    Student = <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>    Teacher = <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>    TeacherAssist = <span style="color:#ae81ff">4</span>,
+</span></span><span style="display:flex;"><span>    TeamLeader = <span style="color:#ae81ff">8</span>,
+</span></span><span style="display:flex;"><span>    DormitoryHead = <span style="color:#ae81ff">16</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>public class Student  {</p>
+<pre><code>      public Role Roles { get; set; }
+  
+      public void AddRole(Role role) {
+          Roles = Roles | role;
+      }
+  }
+  
+  public class Teacher  {
+  
+      public Role Roles { get; set; }
+  
+      public void AddRole(Role role) {
+          Roles = Roles | role;
+      }
+  }
+  ```
+</code></pre>
+<h3 id="4-特性">4. 特性</h3>
+<ul>
+<li>
+<p><strong>就好像给类打的一个“标签”</strong></p>
+<ul>
+<li>
+<p>示例代码：</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C#" data-lang="C#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main5(<span style="color:#66d9ef">string</span>[] args) {
+</span></span><span style="display:flex;"><span>    Student s = <span style="color:#66d9ef">new</span> Student();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Attribute attribute = MyOwnAttribute.GetCustomAttribute(<span style="color:#66d9ef">typeof</span>(Student), <span style="color:#66d9ef">typeof</span>(MyOwnAttribute));
+</span></span><span style="display:flex;"><span>    Console.WriteLine((attribute <span style="color:#66d9ef">as</span> MyOwnAttribute).Fee);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// working in BeiJing</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 5500</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method,AllowMultiple =true)]</span><span style="color:#75715e">// 表示此特性仅能使用与 class 与 method,并且可以标记多次</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyOwnAttribute</span>:Attribute {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> MyOwnAttribute() {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;MyOwn is init ... &#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 构造函数的参数可以在 Attribute 标记时赋值</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> MyOwnAttribute(<span style="color:#66d9ef">string</span> city) {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">$&#34;working in {city}&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 属性可以在 Attribute 标记时赋值</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Fee { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Attribute 中同样可以有方法</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> SuperVise() {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">[MyOwn]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[MyOwn(&#34;BeiJing&#34;,Fee = 5500)]</span><span style="color:#75715e">// 相当于 new MyOwn(&#34;BeiJing&#34;){ Fee = 5500 }</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Student</span>  {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Role Roles { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> AddRole(Role role) {
+</span></span><span style="display:flex;"><span>        Roles = Roles | role;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p><strong>特性本质上是一个继承了 Attribute 的类，自定义的特性必须继承自 Attribute</strong></p>
+</li>
+<li>
+<p><strong>Attribute 的语法特点：</strong></p>
+<ul>
+<li>可使用与任何“目标”元素，包括但不限于：类、类成员、enum、delegate、Assembly &hellip;. （通过 AttributeUsage 特性指定）</li>
+<li>一个目标元素可以被附着多个 Attribute</li>
+<li>可以像方法一样接收参数</li>
+<li>构造函数和方法等不会自动执行，直到显式的获取 &hellip;.</li>
+</ul>
+</li>
+<li>
+<p><strong>自定义的 Attribute 类名建议使用 Attribute 后缀，但是实际使用时可以省略该后缀</strong></p>
+</li>
+<li>
+<p><strong>常用的 Attribute：</strong></p>
+<ul>
+<li>Flags：如上枚举示例中</li>
+<li>Obsolete：已过期</li>
+<li>Serializable：可序列化</li>
+</ul>
+</li>
+</ul>
+<h2 id="编程英语">编程英语</h2>
+<p>![image-20200728015707041](C:\360极速浏览器X下载\books\C# 异步编程.assets\image-20200728015707041.png)</p>
+<p>![image-20200805172557948](C:\360极速浏览器X下载\books\C# 异步编程.assets\image-20200805172557948.png)</p>
+<h2 id="c-异步编程">C# 异步编程</h2>
+<h3 id="1-线程thread创建线程">1. 线程（Thread）：创建线程</h3>
+<h4 id="11-什么是线程-thread">1.1 什么是线程 Thread</h4>
+<ul>
+<li><strong>线程是一个可执行路径，它可以独立于其他线程执行。</strong></li>
+<li><strong>每个线程都在操作系统的进程（Process）内执行，而操作系统进程提供了程序运行的独立环境</strong></li>
+<li><strong>单线程的应用，在进程的独立环境里只跑一个线程，所以该线程拥有独占权。</strong></li>
+<li><strong>多线程应用，单个进程中会跑多个线程，它们会共享当前的执行环境（尤其是内存）</strong>
+<ul>
+<li>例如，一个线程在后台读取数据，另一个线程在数据到达后进行展示</li>
+<li>这个数据就被称作是共享的状态</li>
+</ul>
+</li>
+</ul>
+<h4 id="12-示例">1.2 示例</h4>
+<ul>
+<li><strong>代码：</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 开启了一个新的线程 Thread</span>
+</span></span><span style="display:flex;"><span>        Thread t = <span style="color:#66d9ef">new</span> Thread(WriteY);
+</span></span><span style="display:flex;"><span>        t.Name = <span style="color:#e6db74">&#34;Y Thread ... &#34;</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 运行 WriteY()</span>
+</span></span><span style="display:flex;"><span>        t.Start();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 同时在主线程也做一些工作</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">1000</span>; i++)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            System.Console.Write(<span style="color:#e6db74">&#34;x&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> WriteY()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">1000</span>; i++)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            System.Console.Write(<span style="color:#e6db74">&#34;y&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>
+<p><strong>在单核计算机上，操作系统必须为每个线程分配“时间片”（在Windows中通常为20毫秒）来模拟并发，从而导致重复的x和y块</strong></p>
+</li>
+<li>
+<p><strong>在多核或多处理器计算机上，这两个线程可以真正地并行执行（可能受到计算机上其他活动进行的竞争）。</strong></p>
+<ul>
+<li>在本例中，由于控制台处理并发请求机制的微妙性，您仍让会得到重复的x和y块。</li>
+</ul>
+</li>
+<li>
+<p><strong>输出结果：</strong></p>
+</li>
+</ul>
+<p>![image-20200726191558333](C:\360极速浏览器X下载\books\C# 异步编程.assets\image-20200726191558333.png)</p>
+<h4 id="13-线程的一些属性">1.3 线程的一些属性</h4>
+<ul>
+<li>
+<p><strong>线程一旦开始执行，IsAlive就是 true，线程结束就变成了 false。</strong></p>
+</li>
+<li>
+<p><strong>线程结束的条件就是：线程构造函数传入的委托结束了执行。</strong></p>
+</li>
+<li>
+<p><strong>线程一旦结束，就无法再重启。</strong></p>
+</li>
+<li>
+<p><strong>每一个线程都有 Name 属性，通常用于调试。</strong></p>
+<ul>
+<li>线程 Name 只能设置一次，以后更改会抛出异常</li>
+</ul>
+</li>
+<li>
+<p><strong>静态的 Thread.CurrentThread 属性，会返回当前执行的线程</strong></p>
+</li>
+<li>
+<p><strong>代码：</strong></p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>
+</span></span><span style="display:flex;"><span> {
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args)
+</span></span><span style="display:flex;"><span>     {
+</span></span><span style="display:flex;"><span>         Thread.CurrentThread.Name = <span style="color:#e6db74">&#34;Main Thread ... &#34;</span>;
+</span></span><span style="display:flex;"><span>         <span style="color:#75715e">// 开启了一个新的线程 Thread</span>
+</span></span><span style="display:flex;"><span>         Thread t = <span style="color:#66d9ef">new</span> Thread(WriteY);
+</span></span><span style="display:flex;"><span>         t.Name = <span style="color:#e6db74">&#34;Y Thread ... &#34;</span>;
+</span></span><span style="display:flex;"><span>         <span style="color:#75715e">// 运行 WriteY()</span>
+</span></span><span style="display:flex;"><span>         t.Start();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>         System.Console.WriteLine(Thread.CurrentThread.Name);
+</span></span><span style="display:flex;"><span>         <span style="color:#75715e">// 同时在主线程也做一些工作</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">1000</span>; i++)
+</span></span><span style="display:flex;"><span>         {
+</span></span><span style="display:flex;"><span>             System.Console.Write(<span style="color:#e6db74">&#34;x&#34;</span>);
+</span></span><span style="display:flex;"><span>         }
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> WriteY()
+</span></span><span style="display:flex;"><span>     {
+</span></span><span style="display:flex;"><span>         System.Console.WriteLine(Thread.CurrentThread.Name);
+</span></span><span style="display:flex;"><span>         <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>; i &lt; <span style="color:#ae81ff">1000</span>; i++)
+</span></span><span style="display:flex;"><span>         {
+</span></span><span style="display:flex;"><span>             System.Console.Write(<span style="color:#e6db74">&#34;y&#34;</span>);
+</span></span><span style="display:flex;"><span>         }
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span> }
+</span></span></code></pre></div><ul>
+<li><strong>输出结果：</strong></li>
+</ul>
+<p>![image-20200726192213637](C:\360极速浏览器X下载\books\C# 异步编程.assets\image-20200726192213637.png)</p>
+<h3 id="2-threadjoin--threadsleep">2. Thread.Join() &amp; Thread.Sleep()</h3>
+<h4 id="21-join-and-sleep">2.1 Join and Sleep</h4>
+<ul>
+<li><strong>调用 Join 方法，就可以等待另一个线程结束。</strong></li>
+<li><strong>代码示例：</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">static</span> Thread thread1,thread2;
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            thread1 = <span style="color:#66d9ef">new</span> Thread(ThreadProc);
+</span></span><span style="display:flex;"><span>            thread1.Name = <span style="color:#e6db74">&#34;Thread1&#34;</span>;
+</span></span><span style="display:flex;"><span>            thread1.Start();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            thread2 = <span style="color:#66d9ef">new</span> Thread(ThreadProc);
+</span></span><span style="display:flex;"><span>            thread2.Name = <span style="color:#e6db74">&#34;Thread2&#34;</span>;
+</span></span><span style="display:flex;"><span>            thread2.Start();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> ThreadProc()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            System.Console.WriteLine(<span style="color:#e6db74">&#34;\nCurrent thread:{0}&#34;</span>,Thread.CurrentThread.Name);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (Thread.CurrentThread.Name == <span style="color:#e6db74">&#34;Thread1&#34;</span> &amp;&amp; thread2.ThreadState != ThreadState.Unstarted)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                thread2.Join();
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            Thread.Sleep(<span style="color:#ae81ff">2000</span>);
+</span></span><span style="display:flex;"><span>            System.Console.WriteLine(<span style="color:#e6db74">&#34;\nCurrent thread:{0}&#34;</span>,Thread.CurrentThread.Name);
+</span></span><span style="display:flex;"><span>            System.Console.WriteLine(<span style="color:#e6db74">&#34;Thread1:{0}&#34;</span>,thread1.ThreadState);
+</span></span><span style="display:flex;"><span>            System.Console.WriteLine(<span style="color:#e6db74">&#34;Thread2:{0}\n&#34;</span>,thread2.ThreadState);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><ul>
+<li><strong>输出结果：</strong></li>
+</ul>
+<p>![image-20200726204848254](C:\360极速浏览器X下载\books\C# 异步编程.assets\image-20200726204848254.png)</p>
+<ul>
+<li><strong>添加超时：</strong></li>
+<li><strong>调用 Join 的时候，可以设置一个超时，用毫秒或者 TimeSpan 都可以</strong>
+<ul>
+<li>如果返回 true，那就表示线程结束了；如果超时了，就会返回 false。</li>
+</ul>
+</li>
+<li><strong>示例代码：</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> Thread thread1,thread2;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        thread1 = <span style="color:#66d9ef">new</span> Thread(ThreadProc);
+</span></span><span style="display:flex;"><span>        thread1.Name = <span style="color:#e6db74">&#34;Thread1&#34;</span>;
+</span></span><span style="display:flex;"><span>        thread1.Start();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        thread2 = <span style="color:#66d9ef">new</span> Thread(ThreadProc);
+</span></span><span style="display:flex;"><span>        thread2.Name = <span style="color:#e6db74">&#34;Thread2&#34;</span>;
+</span></span><span style="display:flex;"><span>        thread2.Start();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> ThreadProc()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        System.Console.WriteLine(<span style="color:#e6db74">&#34;\nCurrent thread:{0}&#34;</span>,Thread.CurrentThread.Name);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (Thread.CurrentThread.Name == <span style="color:#e6db74">&#34;Thread1&#34;</span> &amp;&amp; thread2.ThreadState != ThreadState.Unstarted)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (thread2.Join(<span style="color:#ae81ff">2000</span>))
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                System.Console.WriteLine(<span style="color:#e6db74">&#34;Thread2 has termminated.&#34;</span>);
+</span></span><span style="display:flex;"><span>            }<span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                System.Console.WriteLine(<span style="color:#e6db74">&#34;The timeout has elapsed and Thread1 will resume.&#34;</span>);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        Thread.Sleep(<span style="color:#ae81ff">2000</span>);
+</span></span><span style="display:flex;"><span>        System.Console.WriteLine(<span style="color:#e6db74">&#34;\nCurrent thread:{0}&#34;</span>,Thread.CurrentThread.Name);
+</span></span><span style="display:flex;"><span>        System.Console.WriteLine(<span style="color:#e6db74">&#34;Thread1:{0}&#34;</span>,thread1.ThreadState);
+</span></span><span style="display:flex;"><span>        System.Console.WriteLine(<span style="color:#e6db74">&#34;Thread2:{0}\n&#34;</span>,thread2.ThreadState);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>输出结果：</strong></li>
+</ul>
+<p>![image-20200726220322200](C:\360极速浏览器X下载\books\C# 异步编程.assets\image-20200726220322200.png)</p>
+<ul>
+<li><strong>示例代码2：</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program2</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// TimeSpan.TimeSpan(int hours,int minutes,int seconds);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> TimeSpan waitTime = <span style="color:#66d9ef">new</span> TimeSpan(<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Thread newThread = <span style="color:#66d9ef">new</span> Thread(Work);
+</span></span><span style="display:flex;"><span>        newThread.Start();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (newThread.Join(waitTime + waitTime))
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            System.Console.WriteLine(<span style="color:#e6db74">&#34;New Thread terminated.&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            System.Console.WriteLine(<span style="color:#e6db74">&#34;Join timed out.&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Work()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Thread.Sleep(waitTime);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>示例代码3：</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 也可以使用 TimeSpan 实现相同的效果</span>
+</span></span><span style="display:flex;"><span>    TimeSpan interval = <span style="color:#66d9ef">new</span> TimeSpan(<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>;i &lt; <span style="color:#ae81ff">5</span>;i++)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;Sleep for 2 seconds.&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 程序执行结果就是：每隔2秒输出一次 Sleep for 2 seconds. 这句话</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Thread.Sleep(2000);</span>
+</span></span><span style="display:flex;"><span>        Thread.Sleep(interval);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;Main thread exits.&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>
+<p><strong>Thread.Sleep() 方法会暂停当前的线程，并等待制定的时间。</strong></p>
+</li>
+<li>
+<p><strong>注意：</strong></p>
+<ul>
+<li><strong>Thread.Sleep(0) 这样调用会导致线程立即放弃本身当前的时间片，自动将CPU移交给其他线程</strong></li>
+<li><strong>Thread.Yiels() 做同样的事情，但是它只会把执行时间片交给同一处理器上的其他线程</strong></li>
+<li><strong>当等待 Sleep 或 Join 的时候，线程处于阻塞的状态。</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>Sleep(0) 或 Yield 有时在高级性能调试的生产代码中很有用。它也是一个很好的诊断工具，有助于发现线程安全问题：</strong></p>
+<ul>
+<li>如果在代码中的任何地方插入 Thread.Yield() 就破坏的程序，那么你的程序几乎肯定就有 bug。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-阻塞-blocking">3. 阻塞 Blocking</h3>
+<h4 id="31-阻塞">3.1 阻塞</h4>
+<ul>
+<li>
+<p><strong>如果线程的执行由于某种原因导致暂定，那么就认为该线程被阻塞了。</strong></p>
+<ul>
+<li>例如在 Sleep 或者通过 Join 等待其他线程结束</li>
+</ul>
+</li>
+<li>
+<p><strong>被阻塞的线程会立即将其处理器的时间片生成给其他线程，从此就不再消耗处理器的时间，直到满足其阻塞条件为止。</strong></p>
+<ul>
+<li>直到满足其阻塞条件为止：是指直到满足这个阻塞条件了，然后CPU处理器的时间片就回到了线程，从此线程就可以继续消耗处理器的时间了，也就是说在满足这个阻塞条件之前，当前这个线程就会干等着，(阻塞就是线程的假死状态)，然后直到满足这个阻塞条件了，这个线程才可以继续干活。</li>
+</ul>
+</li>
+<li>
+<p><strong>可以通过 ThreadState 这个属性来判断线程是否处于被阻塞的状态：</strong></p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> blocked = (someThread.ThreadState &amp; ThreadState.WaitSleepJoin) != <span style="color:#ae81ff">0</span>;
+</span></span></code></pre></div></li>
+</ul>
+</li>
+</ul>
+<h4 id="32-threadstate">3.2 ThreadState</h4>
+<ul>
+<li><strong>ThreadState 是一个 flag enum，通过按位或的形式，可以合并数据的选项。</strong></li>
+<li><strong>ThreadState 的选项：其中每一个选项的数字都是2的，并都使用二进制表示</strong></li>
+</ul>
+<p>![image-20200726224250974](C:\360极速浏览器X下载\books\C# 异步编程.assets\image-20200726224250974.png)</p>
+<ul>
+<li>
+<p><strong>但是它的大部分的枚举值都没什么用，下面的代码将 ThraedState 剥离为四个最有用的值之一：==UnStarte、Running、WaitSleepJoin 和 Stopped==</strong></p>
+</li>
+<li>
+<p><strong>ThreadState 属性可用于诊断的目的，但不适用于同步，因为线程状态可能会在测试 ThreadState 和对该信息进行操作之间发生变化。</strong></p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> ThreadState SimpleThreadState(ThreadState ts)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> ts &amp; (ThreadState.Unstarted | 
+</span></span><span style="display:flex;"><span>                 ThreadState.Stopped | 
+</span></span><span style="display:flex;"><span>                 ThreadState.WaitSleepJoin);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p><strong>示例代码：</strong></p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> state = ThreadState.Unstarted | ThreadState.Stopped | ThreadState.WaitSleepJoin;
+</span></span><span style="display:flex;"><span>        System.Console.WriteLine(<span style="color:#e6db74">$&#34;{Convert.ToString((int)state,2)}&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// UnSarted = 8 = 1000  Stopped = 16 = 10000 WaitSleepJoin = 32 = 100000</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         100000|
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">          10000|
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">           1000|
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        = 111000    
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        */</span> 
+</span></span><span style="display:flex;"><span>          
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>输出结果：</strong></li>
+</ul>
+<p>![image-20200726225555840](C:\360极速浏览器X下载\books\C# 异步编程.assets\image-20200726225555840.png)</p>
+<ul>
+<li><strong>线程可能的状态：</strong></li>
+</ul>
+<p>![image-20200726225847712](C:\360极速浏览器X下载\books\C# 异步编程.assets\image-20200726225847712.png)</p>
+<h4 id="33-接触阻塞-unblocking">3.3 接触阻塞 Unblocking</h4>
+<ul>
+<li><strong>当遇到下列四种情况的时候，就会解除阻塞：</strong>
+<ul>
+<li><strong>阻塞条件超时</strong></li>
+<li><strong>操作超时（如果设置超时的话）</strong></li>
+<li><strong>通过 Thread.Interrupt() 进行打断</strong></li>
+<li><strong>通过 Thread.Abort() 进行中止</strong></li>
+</ul>
+</li>
+<li><strong>上下文切换：</strong>
+<ul>
+<li>当线程阻塞或接触阻塞时，操作系统将执行上下文切换。这会产生少量开销，通常为 1 或 2 微秒。</li>
+</ul>
+</li>
+</ul>
+<h4 id="34-io-bound-vs-compute-bound或-cpu-bound">3.4 I/O-bound vs Compute-bound（或 CPU-Bound）</h4>
+<ul>
+<li><strong>一个花费大部分时间等待某事发生的操作称为 I/O-bound</strong>
+<ul>
+<li>I/O绑定操作通常涉及输入或输出，但这不是硬性要求：Thread.Sleep() 也被视为 I/O-bound</li>
+</ul>
+</li>
+<li><strong>相反，一个花费大部分时间执行 CPU 密集型工作的操作称为 Compute-bound。</strong></li>
+</ul>
+<h4 id="35-阻塞-vs-忙等待自旋blocking-vs-spinning">3.5 阻塞 vs 忙等待（自旋）：Blocking vs Spinning</h4>
+<ul>
+<li>
+<p><strong>IO-bound 操作的工作方式有两种：</strong></p>
+<ul>
+<li>在当前线程上同步等待：
+<ul>
+<li>Console.ReadLine()，Thread.Sleep(),Thread.Join() &hellip;</li>
+</ul>
+</li>
+<li>异步的操作，在稍后操作完成时触发一个回调动作。</li>
+</ul>
+</li>
+<li>
+<p><strong>同步等待的 I/O-bound 操作将大部分时间花在阻塞线程上。</strong></p>
+</li>
+<li>
+<p><strong>它们也可以周期性的在一个循环里进行“打转（自旋）”</strong></p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">while</span>(DateTime.Now &lt; nextStartTime) <span style="color:#75715e">// 忙等待</span>
+</span></span><span style="display:flex;"><span>    Thread.Sleep(<span style="color:#ae81ff">1000</span>);				<span style="color:#75715e">// I/O-bound</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span>(DateTime.Now &lt; nextStartTime)
+</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p><strong>在忙等待和阻塞方面有一些细微差别。</strong></p>
+<ul>
+<li>首先，如果希望条件很快得到满足（可能在几微秒之内），则短暂自旋可能会很有效，因为它避免了上下文切换的开销与延迟
+<ul>
+<li>.NET Framework 提供了特殊的方法和类来帮助 SpinLock 和 SpinWait</li>
+</ul>
+</li>
+<li>其次，阻塞也不是零成本。这是因为每个线程在生存周期会占用大约 1 MB的内存，并会给 CLR 和操作系统带来持续的管理开销
+<ul>
+<li>因此，在需要处理成百上千并发操作的大量 I/O-bound 程序的上下文中，阻塞可能会很麻烦</li>
+<li>所以，此类程序需要使用基于回调的方法，在等待完成时完全撤销其线程。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-本地共享状态与线程安全简介">4. 本地、共享状态与线程安全（简介）</h3>
+<h4 id="41-本地-vs-共享的状态">4.1 本地 vs 共享的状态</h4>
+<ul>
+<li><strong>Local vs Shared State</strong></li>
+</ul>
+<ol>
+<li>
+<p><strong>Local 本地独立</strong></p>
+<ul>
+<li>
+<p>CLR 为每个线程分配自己的内存栈（Stack），以便使本地变量保持独立</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">new</span> Thread(Go).Start();<span style="color:#75715e">// 在新下线程上调用 Go()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Go();<span style="color:#75715e">// 在 main 线程上调用 Go()</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Go()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// cycles 是本地变量</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 在每个线程的内存栈上，都会创建 cycles 独立的副本</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> cycles = <span style="color:#ae81ff">0</span>; cycles &lt; <span style="color:#ae81ff">5</span>; cycles++)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#39;?&#39;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 结果会输出 10 个 ？</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 因为每个循环是5次</span>
+</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p><strong>Shared 共享</strong></p>
+<ul>
+<li>
+<p>如果多个线程都引用到同一个对象的实例，那么它们就共享了数据</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ThreadTest</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> _done;<span style="color:#75715e">// 默认值没写就是false</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        ThreadTest tt = <span style="color:#66d9ef">new</span> ThreadTest(); <span style="color:#75715e">// 创建了一个共同的实例</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">new</span> Thread(tt.Go).Start();
+</span></span><span style="display:flex;"><span>        tt.Go();
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 主线程main与新线程都使用了tt这个变量</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> Go() <span style="color:#75715e">// 这是一个实例方法</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (!_done)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            _done = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;Done&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 由于两个线程是在同一个 ThreadTest 实例上调用的 Go()，所以它们共享 _done</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 结果就是只打印一次 Done</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+</ul>
+</li>
+</ol>
+<pre tabindex="0"><code>     
+- 被 Lambda 表达式或匿名委托所捕获的本地变量，会被编译器转化为字段（field），所以也会被共享
+   
+   - ```c#
+     class ThreadTest
+     {
+         static void Main()
+         {
+             bool done = false;
+     
+             ThreadStart action = () =&gt; 
+             {
+                 if (!done)
+                 {
+                     done = true;
+                     Console.WriteLine(&#34;Done3&#34;);
+                 }
+             };
+     
+             new Thread(action).Start();
+             action();
+          // 结果是只打印一次 Done3 
+       }
+  }
+</code></pre><ul>
+<li>
+<p>静态字段（field）也会在线程间共享数据</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ThreadTest2</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">bool</span> _done; <span style="color:#75715e">// 静态字段在同一应用域下的所有线程中被共享</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">new</span> Thread(Go).Start();
+</span></span><span style="display:flex;"><span>        Go();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Go() <span style="color:#75715e">// 这是一个实例方法</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (!_done)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            _done = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;Done&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 由于静态字段在同一应用域下的所有线程中被共享</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 结果就是只打印一次 Done</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+</ul>
+<h4 id="42-线程安全-thread-safety">4.2 线程安全 Thread Safety</h4>
+<ul>
+<li>
+<p><strong>前面上述例子就引出了==线程安全==这个关键概念（或者说缺乏线程安全）</strong></p>
+</li>
+<li>
+<p><strong>也即上述例子的输出实际上是无法确定的：</strong></p>
+<ul>
+<li>
+<p>有可能（理论上）“Done”会被打印两次</p>
+</li>
+<li>
+<p>如果交换 Go 方法里语句的顺序，那么“Done”被打印两次的几率会大大增加</p>
+</li>
+<li>
+<p>因为一个线程可能正在评估 if，而另外一个线程在执行 WriteLine 语句，它还没来得及把 done 设为 true。</p>
+</li>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> done = <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ThreadStart action = () =&gt; 
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (!done)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;Done3&#34;</span>);
+</span></span><span style="display:flex;"><span>            Thread.Sleep(<span style="color:#ae81ff">100</span>);<span style="color:#75715e">// 100毫秒</span>
+</span></span><span style="display:flex;"><span>            done = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">new</span> Thread(action).Start();
+</span></span><span style="display:flex;"><span>    action();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p><strong>我们应该尽可能的避免使用共享状态</strong></p>
+</li>
+</ul>
+<h4 id="43-锁定与线程安全-简介">4.3 锁定与线程安全 简介</h4>
+<ul>
+<li>
+<p><strong>Locking &amp; Thread Safety</strong></p>
+</li>
+<li>
+<p><strong>在读取和写入共享数据的时候，通过使用一个互斥锁（<em>exclusive lock</em>），就可以修复前面例子的问题。</strong></p>
+</li>
+<li>
+<p><strong>C# 使用 lock 语句来加锁</strong></p>
+</li>
+<li>
+<p><strong>当两个线程同时竞争一个锁的时候（锁可以基于任何引用类型对象），一个线程会等待或阻塞，直到锁变成可用状态</strong></p>
+</li>
+<li>
+<p><strong>在多线程上下文中，以这种方式避免不确定性的代码就叫做==线程安全==。</strong></p>
+</li>
+<li>
+<p><strong>Lock 不是线程安全的银弹，很容易忘记对字段加锁，lock 也会引用一些问题（死锁）</strong></p>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ThreadSafe</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">bool</span> _done;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">object</span> _locker = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">object</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">new</span> Thread(Go).Start();
+</span></span><span style="display:flex;"><span>        Go();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Go()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">lock</span>(_locker)<span style="color:#75715e">// 锁可以基于任何引用类型的对象</span>
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (!_done)
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                Console.WriteLine(<span style="color:#e6db74">&#34;Done with the lock block.&#34;</span>);
+</span></span><span style="display:flex;"><span>                _done = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 输出结果是打印一遍 Done with the lock block. </span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p><strong>思考：i++ 这种表达式是否是线程安全的？（i 是共享数据）</strong></p>
+<ul>
+<li>不是，因为i++不具备原子性</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-向线程传递数据--异常处理">5、 向线程传递数据 &amp; 异常处理</h3>
+
+        </p>
+        
+    </div>
+
+    <div class="prev-next">
+        
+    </div>
+</div>
+
+
+
+    
+
+        </main><footer class="footer">
+    
+    
+
+    <span>&copy; 2023 </span>
+    <span>
+        Made with &#10084;&#65039; using <a target="_blank" href="https://github.com/526avijitgupta/gokarna">Gokarna</a>
+    </span>
+</footer>
+</body>
+</html>

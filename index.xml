@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Zlim530 Blog Site</title>
+    <link>https://zlim530.github.io/</link>
+    <description>Recent content on Zlim530 Blog Site</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 30 May 2023 15:49:34 +0800</lastBuildDate><atom:link href="https://zlim530.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>C# 异步编程</title>
+      <link>https://zlim530.github.io/posts/first_post/</link>
+      <pubDate>Tue, 30 May 2023 15:49:34 +0800</pubDate>
+      
+      <guid>https://zlim530.github.io/posts/first_post/</guid>
+      <description>1. 异步和并行-概念 First of All：不要把异步和多线程混为一谈
+异步：某个事件不等待另外一个事件完成就可以怎么怎么样
+因为异步，所以时间上有交错，不同线程间在某一个时间点上会重合，而某时间点就会有先后执行 同步：某个事件必须等待另外一个事件的完成才可以怎么怎么样
+1.1 概念区别 并行（parallel）：多个任务真正的“同时”进行，只能在多核处理器上实现，即真正的多线程，因为一个CPU核心同一个时间点只能处理一个任务，所以并行只能在多（核）处理器上实现。并行是能够真正提高程序运行效率的
+并发（concurrency）：多个任务在运行时间上有重叠，通常在单核CPU中实现，在微观上来看CPU在同一时间片上还是只能处理一个任务，即串行
+在电脑没有多核CPU的时代（或者程序没有运行在多核上），我们用并发（concurrency）来模拟并行。
+简单的说：
+CPU的运行被分成很多的“时间片”（时间片非常的短，我们人类是察觉不到的） 这个时间片里CPU可以执行A任务，下一个时间片里CPU就执行B任务，再下一个时间片C任务；然后再回来执行A，再执行B，再C；再A……如此往复 在我们看来，A/B/C三个任务似乎被同时执行一样 多线程（multiple-threads）：一个进程上有多个线程同时运行。在某些语境下可以和“并发”混用，因为目前的操作系统是使用多线程实现并发
+进程（process）：重量级，是操作系统分配资源（例如内存/CPU/IO等资源）的单位，通常是一个运行中的程序
+由操作系统管理（调度） 一个应用程序至少有一个（可以有多个）进程 资源包括：内存、CPU、I/O等 进程之间的资源不能共享 线程（thread）：轻量级，共享进程资源
+线程不具备独立完成一个任务的资源，它需要进程的支持 多个线程可共享进程资源 为什么需要“假的”并行：并发？
+增加响应（responsive），常用于UI 多核CPU提高吞吐量（throughput）。主要是源于CPU（尤其是多核CPU）和I/O操作在效率上的巨大差距；如果只能同步串行（即同步单线程）的话，CPU将存在大量的“等待空闲”时间，不利于资源利用。 为什么需要？
+无论是多进程，还是多线程，本质上都是为了让多个进程/线程同时（或者至少看起来像同时）完成一个工作，从而：
+压榨系统性能。简单理解，一桌菜10个人吃比1个人吃要快（并发后文详述） 提高用户响应。操作系统多进程，所以我们可以一边听歌（一个进程）一边写代码（又一个进程）；射击游戏多线程，所以你跑你的，我打我的，不会你跑的时候我就不能开枪，我开枪的时候你就不能跑……（用WinForm 做坦克大战就这效果） 用于ASP.NET的IIS本身就是多线程的。
+2. 异步和并行-线程代码 2.1 Thread类 Task是在.NET 4.0之后引入的，之前.NET提供的是Thread（线程）类。 2.1.1 单线程 在此之前，我们的代码都是运行在一个线程中，这被称之为“单线程编程”。 我们默认使用的这个线程被称为主（primary）线程，或者启动线程。使用Thread.CurrentThread可以获取： using System.Threading; Thread current = Thread.CurrentThread; 2.1.2 多线程 让代码运行在多个线程中，就被称之为“多线程编程”，又称之为并发。 可以new一个工作线程： static void Main(){ Thread current = new Thread(Process); current.Start(); // 然后，可以获取线程的相关信息：注意自行下列代码时有可能会因为子线程 current 的执行完毕而抛出异常，那么此时可以获取当前正在执行的线程来查看下列信息：Thread current = Thread.</description>
+    </item>
+    
+  </channel>
+</rss>
