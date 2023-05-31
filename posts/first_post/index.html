@@ -1,140 +1,168 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+<head>
+  <meta name="generator" content="Hugo 0.112.3" />
+  <meta charset="utf-8">
+  <title>C# 异步编程 · Zlim530 Blog Site</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="1. 异步和并行-概念 First of All：不要把异步和多线程混为一谈
+异步：某个事件不等待另外一个事件完成就可以怎么怎么样
+因为异步，所以时间上有交错，不同线程间在某一个时间点上会重合，而某时间点就会有先后执行 同步：某个事件必须等待另外一个事件的完成才可以怎么怎么样
+1.1 概念区别 并行（parallel）：多个任务真正的“同时”进行，只能在多核处理器上实现，即真正的多线程，因为一个CPU核心同一个时间点只能处理一个任务，所以并行只能在多（核）处理器上实现。并行是能够真正提高程序运行效率的
+并发（concurrency）：多个任务在运行时间上有重叠，通常在单核CPU中实现，在微观上来看CPU在同一时间片上还是只能处理一个任务，即串行
+在电脑没有多核CPU的时代（或者程序没有运行在多核上），我们用并发（concurrency）来模拟并行。
+简单的说：
+CPU的运行被分成很多的“时间片”（时间片非常的短，我们人类是察觉不到的） 这个时间片里CPU可以执行A任务，下一个时间片里CPU就执行B任务，再下一个时间片C任务；然后再回来执行A，再执行B，再C；再A……如此往复 在我们看来，A/B/C三个任务似乎被同时执行一样 多线程（multiple-threads）：一个进程上有多个线程同时运行。在某些语境下可以和“并发”混用，因为目前的操作系统是使用多线程实现并发
+进程（process）：重量级，是操作系统分配资源（例如内存/CPU/IO等资源）的单位，通常是一个运行中的程序
+由操作系统管理（调度） 一个应用程序至少有一个（可以有多个）进程 资源包括：内存、CPU、I/O等 进程之间的资源不能共享 线程（thread）：轻量级，共享进程资源
+线程不具备独立完成一个任务的资源，它需要进程的支持 多个线程可共享进程资源 为什么需要“假的”并行：并发？
+增加响应（responsive），常用于UI 多核CPU提高吞吐量（throughput）。主要是源于CPU（尤其是多核CPU）和I/O操作在效率上的巨大差距；如果只能同步串行（即同步单线程）的话，CPU将存在大量的“等待空闲”时间，不利于资源利用。 为什么需要？
+无论是多进程，还是多线程，本质上都是为了让多个进程/线程同时（或者至少看起来像同时）完成一个工作，从而：
+压榨系统性能。简单理解，一桌菜10个人吃比1个人吃要快（并发后文详述） 提高用户响应。操作系统多进程，所以我们可以一边听歌（一个进程）一边写代码（又一个进程）；射击游戏多线程，所以你跑你的，我打我的，不会你跑的时候我就不能开枪，我开枪的时候你就不能跑……（用WinForm 做坦克大战就这效果） 用于ASP.NET的IIS本身就是多线程的。
+2. 异步和并行-线程代码 2.1 Thread类 Task是在.NET 4.0之后引入的，之前.NET提供的是Thread（线程）类。 2.1.1 单线程 在此之前，我们的代码都是运行在一个线程中，这被称之为“单线程编程”。 我们默认使用的这个线程被称为主（primary）线程，或者启动线程。使用Thread.CurrentThread可以获取： using System.Threading; Thread current = Thread.CurrentThread; 2.1.2 多线程 让代码运行在多个线程中，就被称之为“多线程编程”，又称之为并发。 可以new一个工作线程： static void Main(){ Thread current = new Thread(Process); current.Start(); // 然后，可以获取线程的相关信息：注意自行下列代码时有可能会因为子线程 current 的执行完毕而抛出异常，那么此时可以获取当前正在执行的线程来查看下列信息：Thread current = Thread." />
 
-    <style>
-        :root {
-            --accent-color: #FF4D4D;
-        }
-    </style>
 
-    
-    
-    
-    
-    
-    
+<link rel="canonical" href="https://zlim530.github.io/posts/first_post/" />
 
-    
-    <title>C# 异步编程</title>
-    <meta name="description" content="">
-    <meta name="keywords" content=''>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+<link rel="stylesheet" href="https://zlim530.github.io/css/den.css">
 
-    <meta property="og:url" content="https://zlim530.github.io/posts/first_post/">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="C# 异步编程">
-    <meta property="og:description" content="">
-    <meta property="og:image" content="https://zlim530.github.io/">
-    <meta property="og:image:secure_url" content="https://zlim530.github.io/">
 
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="C# 异步编程">
-    <meta name="twitter:description" content="">
-    <meta property="twitter:domain" content="https://zlim530.github.io/posts/first_post/">
-    <meta property="twitter:url" content="https://zlim530.github.io/posts/first_post/">
-    <meta name="twitter:image" content="https://zlim530.github.io/">
 
-    
-    <link rel="canonical" href="https://zlim530.github.io/posts/first_post/" />
 
-    <link rel="stylesheet" type="text/css" href="https://zlim530.github.io//css/normalize.min.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" type="text/css" href="https://zlim530.github.io//css/main.css">
-    <link disabled id="dark-theme" rel="stylesheet" href="https://zlim530.github.io//css/dark.css">
-
-    <script src="https://zlim530.github.io//js/svg-injector.min.js"></script>
-    <script src="https://zlim530.github.io//js/feather-icons.min.js"></script>
-    <script src="https://zlim530.github.io//js/main.js"></script>
-
-    
-    
+<meta property="og:title" content="C# 异步编程" />
+<meta property="og:description" content="1. 异步和并行-概念 First of All：不要把异步和多线程混为一谈
+异步：某个事件不等待另外一个事件完成就可以怎么怎么样
+因为异步，所以时间上有交错，不同线程间在某一个时间点上会重合，而某时间点就会有先后执行 同步：某个事件必须等待另外一个事件的完成才可以怎么怎么样
+1.1 概念区别 并行（parallel）：多个任务真正的“同时”进行，只能在多核处理器上实现，即真正的多线程，因为一个CPU核心同一个时间点只能处理一个任务，所以并行只能在多（核）处理器上实现。并行是能够真正提高程序运行效率的
+并发（concurrency）：多个任务在运行时间上有重叠，通常在单核CPU中实现，在微观上来看CPU在同一时间片上还是只能处理一个任务，即串行
+在电脑没有多核CPU的时代（或者程序没有运行在多核上），我们用并发（concurrency）来模拟并行。
+简单的说：
+CPU的运行被分成很多的“时间片”（时间片非常的短，我们人类是察觉不到的） 这个时间片里CPU可以执行A任务，下一个时间片里CPU就执行B任务，再下一个时间片C任务；然后再回来执行A，再执行B，再C；再A……如此往复 在我们看来，A/B/C三个任务似乎被同时执行一样 多线程（multiple-threads）：一个进程上有多个线程同时运行。在某些语境下可以和“并发”混用，因为目前的操作系统是使用多线程实现并发
+进程（process）：重量级，是操作系统分配资源（例如内存/CPU/IO等资源）的单位，通常是一个运行中的程序
+由操作系统管理（调度） 一个应用程序至少有一个（可以有多个）进程 资源包括：内存、CPU、I/O等 进程之间的资源不能共享 线程（thread）：轻量级，共享进程资源
+线程不具备独立完成一个任务的资源，它需要进程的支持 多个线程可共享进程资源 为什么需要“假的”并行：并发？
+增加响应（responsive），常用于UI 多核CPU提高吞吐量（throughput）。主要是源于CPU（尤其是多核CPU）和I/O操作在效率上的巨大差距；如果只能同步串行（即同步单线程）的话，CPU将存在大量的“等待空闲”时间，不利于资源利用。 为什么需要？
+无论是多进程，还是多线程，本质上都是为了让多个进程/线程同时（或者至少看起来像同时）完成一个工作，从而：
+压榨系统性能。简单理解，一桌菜10个人吃比1个人吃要快（并发后文详述） 提高用户响应。操作系统多进程，所以我们可以一边听歌（一个进程）一边写代码（又一个进程）；射击游戏多线程，所以你跑你的，我打我的，不会你跑的时候我就不能开枪，我开枪的时候你就不能跑……（用WinForm 做坦克大战就这效果） 用于ASP.NET的IIS本身就是多线程的。
+2. 异步和并行-线程代码 2.1 Thread类 Task是在.NET 4.0之后引入的，之前.NET提供的是Thread（线程）类。 2.1.1 单线程 在此之前，我们的代码都是运行在一个线程中，这被称之为“单线程编程”。 我们默认使用的这个线程被称为主（primary）线程，或者启动线程。使用Thread.CurrentThread可以获取： using System.Threading; Thread current = Thread.CurrentThread; 2.1.2 多线程 让代码运行在多个线程中，就被称之为“多线程编程”，又称之为并发。 可以new一个工作线程： static void Main(){ Thread current = new Thread(Process); current.Start(); // 然后，可以获取线程的相关信息：注意自行下列代码时有可能会因为子线程 current 的执行完毕而抛出异常，那么此时可以获取当前正在执行的线程来查看下列信息：Thread current = Thread." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://zlim530.github.io/posts/first_post/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-05-30T15:49:34+08:00" />
+<meta property="article:modified_time" content="2023-05-30T15:49:34+08:00" />
+<meta itemprop="name" content="C# 异步编程">
+<meta itemprop="description" content="1. 异步和并行-概念 First of All：不要把异步和多线程混为一谈
+异步：某个事件不等待另外一个事件完成就可以怎么怎么样
+因为异步，所以时间上有交错，不同线程间在某一个时间点上会重合，而某时间点就会有先后执行 同步：某个事件必须等待另外一个事件的完成才可以怎么怎么样
+1.1 概念区别 并行（parallel）：多个任务真正的“同时”进行，只能在多核处理器上实现，即真正的多线程，因为一个CPU核心同一个时间点只能处理一个任务，所以并行只能在多（核）处理器上实现。并行是能够真正提高程序运行效率的
+并发（concurrency）：多个任务在运行时间上有重叠，通常在单核CPU中实现，在微观上来看CPU在同一时间片上还是只能处理一个任务，即串行
+在电脑没有多核CPU的时代（或者程序没有运行在多核上），我们用并发（concurrency）来模拟并行。
+简单的说：
+CPU的运行被分成很多的“时间片”（时间片非常的短，我们人类是察觉不到的） 这个时间片里CPU可以执行A任务，下一个时间片里CPU就执行B任务，再下一个时间片C任务；然后再回来执行A，再执行B，再C；再A……如此往复 在我们看来，A/B/C三个任务似乎被同时执行一样 多线程（multiple-threads）：一个进程上有多个线程同时运行。在某些语境下可以和“并发”混用，因为目前的操作系统是使用多线程实现并发
+进程（process）：重量级，是操作系统分配资源（例如内存/CPU/IO等资源）的单位，通常是一个运行中的程序
+由操作系统管理（调度） 一个应用程序至少有一个（可以有多个）进程 资源包括：内存、CPU、I/O等 进程之间的资源不能共享 线程（thread）：轻量级，共享进程资源
+线程不具备独立完成一个任务的资源，它需要进程的支持 多个线程可共享进程资源 为什么需要“假的”并行：并发？
+增加响应（responsive），常用于UI 多核CPU提高吞吐量（throughput）。主要是源于CPU（尤其是多核CPU）和I/O操作在效率上的巨大差距；如果只能同步串行（即同步单线程）的话，CPU将存在大量的“等待空闲”时间，不利于资源利用。 为什么需要？
+无论是多进程，还是多线程，本质上都是为了让多个进程/线程同时（或者至少看起来像同时）完成一个工作，从而：
+压榨系统性能。简单理解，一桌菜10个人吃比1个人吃要快（并发后文详述） 提高用户响应。操作系统多进程，所以我们可以一边听歌（一个进程）一边写代码（又一个进程）；射击游戏多线程，所以你跑你的，我打我的，不会你跑的时候我就不能开枪，我开枪的时候你就不能跑……（用WinForm 做坦克大战就这效果） 用于ASP.NET的IIS本身就是多线程的。
+2. 异步和并行-线程代码 2.1 Thread类 Task是在.NET 4.0之后引入的，之前.NET提供的是Thread（线程）类。 2.1.1 单线程 在此之前，我们的代码都是运行在一个线程中，这被称之为“单线程编程”。 我们默认使用的这个线程被称为主（primary）线程，或者启动线程。使用Thread.CurrentThread可以获取： using System.Threading; Thread current = Thread.CurrentThread; 2.1.2 多线程 让代码运行在多个线程中，就被称之为“多线程编程”，又称之为并发。 可以new一个工作线程： static void Main(){ Thread current = new Thread(Process); current.Start(); // 然后，可以获取线程的相关信息：注意自行下列代码时有可能会因为子线程 current 的执行完毕而抛出异常，那么此时可以获取当前正在执行的线程来查看下列信息：Thread current = Thread."><meta itemprop="datePublished" content="2023-05-30T15:49:34+08:00" />
+<meta itemprop="dateModified" content="2023-05-30T15:49:34+08:00" />
+<meta itemprop="wordCount" content="4299">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="C# 异步编程"/>
+<meta name="twitter:description" content="1. 异步和并行-概念 First of All：不要把异步和多线程混为一谈
+异步：某个事件不等待另外一个事件完成就可以怎么怎么样
+因为异步，所以时间上有交错，不同线程间在某一个时间点上会重合，而某时间点就会有先后执行 同步：某个事件必须等待另外一个事件的完成才可以怎么怎么样
+1.1 概念区别 并行（parallel）：多个任务真正的“同时”进行，只能在多核处理器上实现，即真正的多线程，因为一个CPU核心同一个时间点只能处理一个任务，所以并行只能在多（核）处理器上实现。并行是能够真正提高程序运行效率的
+并发（concurrency）：多个任务在运行时间上有重叠，通常在单核CPU中实现，在微观上来看CPU在同一时间片上还是只能处理一个任务，即串行
+在电脑没有多核CPU的时代（或者程序没有运行在多核上），我们用并发（concurrency）来模拟并行。
+简单的说：
+CPU的运行被分成很多的“时间片”（时间片非常的短，我们人类是察觉不到的） 这个时间片里CPU可以执行A任务，下一个时间片里CPU就执行B任务，再下一个时间片C任务；然后再回来执行A，再执行B，再C；再A……如此往复 在我们看来，A/B/C三个任务似乎被同时执行一样 多线程（multiple-threads）：一个进程上有多个线程同时运行。在某些语境下可以和“并发”混用，因为目前的操作系统是使用多线程实现并发
+进程（process）：重量级，是操作系统分配资源（例如内存/CPU/IO等资源）的单位，通常是一个运行中的程序
+由操作系统管理（调度） 一个应用程序至少有一个（可以有多个）进程 资源包括：内存、CPU、I/O等 进程之间的资源不能共享 线程（thread）：轻量级，共享进程资源
+线程不具备独立完成一个任务的资源，它需要进程的支持 多个线程可共享进程资源 为什么需要“假的”并行：并发？
+增加响应（responsive），常用于UI 多核CPU提高吞吐量（throughput）。主要是源于CPU（尤其是多核CPU）和I/O操作在效率上的巨大差距；如果只能同步串行（即同步单线程）的话，CPU将存在大量的“等待空闲”时间，不利于资源利用。 为什么需要？
+无论是多进程，还是多线程，本质上都是为了让多个进程/线程同时（或者至少看起来像同时）完成一个工作，从而：
+压榨系统性能。简单理解，一桌菜10个人吃比1个人吃要快（并发后文详述） 提高用户响应。操作系统多进程，所以我们可以一边听歌（一个进程）一边写代码（又一个进程）；射击游戏多线程，所以你跑你的，我打我的，不会你跑的时候我就不能开枪，我开枪的时候你就不能跑……（用WinForm 做坦克大战就这效果） 用于ASP.NET的IIS本身就是多线程的。
+2. 异步和并行-线程代码 2.1 Thread类 Task是在.NET 4.0之后引入的，之前.NET提供的是Thread（线程）类。 2.1.1 单线程 在此之前，我们的代码都是运行在一个线程中，这被称之为“单线程编程”。 我们默认使用的这个线程被称为主（primary）线程，或者启动线程。使用Thread.CurrentThread可以获取： using System.Threading; Thread current = Thread.CurrentThread; 2.1.2 多线程 让代码运行在多个线程中，就被称之为“多线程编程”，又称之为并发。 可以new一个工作线程： static void Main(){ Thread current = new Thread(Process); current.Start(); // 然后，可以获取线程的相关信息：注意自行下列代码时有可能会因为子线程 current 的执行完毕而抛出异常，那么此时可以获取当前正在执行的线程来查看下列信息：Thread current = Thread."/>
 </head>
 <body>
-        <script type="text/javascript">
-            
-            setThemeByUserPref();
-        </script><header class="header">
-    <nav class="header-nav">
-
+  
+  <div class="header-container gradient">
+  <div class="container">
+  <nav class="header-nav navbar navbar-expand-md navbar-dark light-dark">
+    <div class="header-logo navbar-brand">
+      
+        <a class="float-left" href="https://zlim530.github.io/">
+      
         
-
-        <div class="nav-title">
-            <a class="nav-brand" href="https://zlim530.github.io/">Zlim530 Blog Site</a>
-        </div>
-
-        <div class="nav-links">
-            
-            <div class="nav-link">
-                <a href="https://zlim530.github.io/posts/"> Posts </a>
-            </div>
-            
-            <div class="nav-link">
-                <a href="https://zlim530.github.io/tags/"> Tags </a>
-            </div>
-            
-            <div class="nav-link">
-                <a href="https://github.com"><span data-feather='github'></span>  </a>
-            </div>
-            
-
-            <span class="nav-icons-divider"></span>
-            <div class="nav-link dark-theme-toggle">
-                <span id="dark-theme-toggle-screen-reader-target" class="sr-only"></span>
-                <a>
-                    <span id="theme-toggle-icon" data-feather="moon"></span>
-                </a>
-            </div>
-
-            <div class="nav-link" id="hamburger-menu-toggle">
-                <span id="hamburger-menu-toggle-screen-reader-target" class="sr-only">menu</span>
-                <a>
-                    <span data-feather="menu"></span>
-                </a>
-            </div>
-
-            
-            <ul class="nav-hamburger-list visibility-hidden">
-                
-                <li class="nav-item">
-                    <a href="https://zlim530.github.io/posts/"> Posts </a>
-                </li>
-                
-                <li class="nav-item">
-                    <a href="https://zlim530.github.io/tags/"> Tags </a>
-                </li>
-                
-                <li class="nav-item">
-                    <a href="https://github.com"><span data-feather='github'></span>  </a>
-                </li>
-                
-                <li class="nav-item dark-theme-toggle">
-                    <span id="dark-theme-toggle-screen-reader-target" class="sr-only">theme</span>
-                    <a>
-                        <span id="theme-toggle-icon" data-feather="moon"></span>
-                    </a>
-                </li>
-            </ul>
-
-        </div>
-    </nav>
-</header>
-<main id="content">
-    <div class="post container">
-    <div class="post-header-section">
-        <h1>C# 异步编程</h1>
-        <small role="doc-subtitle"></small>
-        <p class="post-date">
-            May 30, 2023
-        </p>
-
-        <ul class="post-tags">
         
-        </ul>
+          Zlim530 Blog Site
+         
+      </a>
     </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="nav-menu collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        
+          <li class="nav-item">
+            
+              
+                <a class="nav-link" href="https://zlim530.github.io/posts/">Posts</a>
+              
+            
+          </li>
+        
+          <li class="nav-item">
+            
+              
+                <a class="nav-link" href="https://zlim530.github.io/tags/">Tags</a>
+              
+            
+          </li>
+        
+          <li class="nav-item">
+            
+              
+                <a class="nav-link" href="https://github.com"><span data-feather='github'></span></a>
+              
+            
+          </li>
+        
+          <li class="nav-item">
+            
+              <a class="nav-link" href="https://zlim530.github.io/zh-tw/about/">關於</a>
+            
+          </li>
+        
+        
+      </ul>
+    </div>
+  </nav>
+</div>
 
-    <div class="post-content">
-        <p>
-            <h3 id="1-异步和并行-概念">1. 异步和并行-概念</h3>
+<div class="container header-wrapper">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="header-content">
+        <h1 class="header-title text-uppercase">
+          C# 异步编程
+        </h1>
+        <div class="header-underline"></div>
+        
+
+      </div>
+    </div>
+  </div>
+</div>
+
+  </div>
+  <main>
+<div class="container content">
+  <h3 id="1-异步和并行-概念">1. 异步和并行-概念</h3>
 <ul>
 <li>
 <p><strong>First of All：不要把异步和多线程混为一谈</strong></p>
@@ -2543,27 +2571,54 @@ Console.WriteLine($&ldquo;before await-2 with thread {Thread.CurrentThread.Manag
 </ul>
 <h3 id="5-向线程传递数据--异常处理">5、 向线程传递数据 &amp; 异常处理</h3>
 
-        </p>
-        
-    </div>
-
-    <div class="prev-next">
-        
-    </div>
 </div>
 
+  </main><div class="footer gradient-2">
+  <div class="container footer-container ">
+    <div class="row">
+      <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+        <div class="footer-title">Sitemap</div>
+        <ul class="list-unstyled">
+            
+              
+                <li><a href="https://zlim530.github.io/tags/">Tags</a></li>
+              
+              
+                <li><a href="https://zlim530.github.io/categories/">Categories</a></li>
+              
+            
+            
+            
+            <li><a rel="alternate" type="application/rss&#43;xml" href="https://zlim530.github.io/index.xml"><i class="fas fa-rss-square"></i> RSS Feed</a></li>
+            
+            
+            
+        </ul>
+      </div>
+      <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+        
+      </div>
+      <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+        
+      </div> 
+      <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+        <p class="pull-right text-right">
+          <small><em>Proudly powered by <a href="https://gohugo.io/" rel="noopener" target="_blank">Hugo</a></em></small><br/>
+          <small><em>Theme - <a href="https://github.com/shaform/hugo-theme-den" rel="noopener" target="_blank">Den</a></em></small><br/>
+          <small>
+            &copy; 
+            
+            2023
+          </small>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
-
-    
-
-        </main><footer class="footer">
-    
-    
-
-    <span>&copy; 2023 </span>
-    <span>
-        Made with &#10084;&#65039; using <a target="_blank" href="https://github.com/526avijitgupta/gokarna">Gokarna</a>
-    </span>
-</footer>
 </body>
 </html>

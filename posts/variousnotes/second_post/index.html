@@ -1,0 +1,2529 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+<head>
+  <meta name="generator" content="Hugo 0.112.3" />
+  <meta charset="utf-8">
+  <title>真会 C# 系列视频笔记 · Zlim530 Blog Site</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="真会 C# 系列视频笔记 编译： C# 编译器把 .cs 结尾的源码文件编译成 Assembly
+Assembly 是 .NET Core 里的包装和部署的单元
+Assembly 可以是应用程序，也可以是库
+.exe dll 针对于 .NET Core 应用，编译只会生成 .DLL 文件：
+DLL 文件是可以直接运行的
+关键字：对编译器有特殊意义的名字 C#里所有的值都是类型的实例。值的含义，变量可能拥有的值是什么，都由它的类型决定。
+构造函数与实例化： 数据是通过实例化一个类型来创建的 预定义的类型直接写 Literal（字面量）就可以被实例化了 而自定义类型则通过 new 操作符来创建实例 实例成员 vs 静态成员 操作于类型实例的数据成员和函数成员都叫做实例成员
+操作于类型而不是类型实例的数据成员和函数成员叫做静态成员
+static 静态类 static class 的所有成员都是静态的
+静态类不可以创建实例，例如 Console 类，它在整个应用程序就一份，这一份是共享的 NULL： NULL 是一个 Literal 可以把 null 赋值给引用（变量），表示该引用不指向任何一个对象 null.Property 会抛出 NullReferenceException (空指针异常) 普通的值类型不可为 null 但是 C#中有一中可空类型（nullable types）来表示值类型的 null 内置类型： 全部都在 System 命名空间下
+除了 decimal 之外的内置类型都叫做原始类型" />
+
+
+<link rel="canonical" href="https://zlim530.github.io/posts/variousnotes/second_post/" />
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+<link rel="stylesheet" href="https://zlim530.github.io/css/den.css">
+
+
+
+
+<meta property="og:title" content="真会 C# 系列视频笔记" />
+<meta property="og:description" content="真会 C# 系列视频笔记 编译： C# 编译器把 .cs 结尾的源码文件编译成 Assembly
+Assembly 是 .NET Core 里的包装和部署的单元
+Assembly 可以是应用程序，也可以是库
+.exe dll 针对于 .NET Core 应用，编译只会生成 .DLL 文件：
+DLL 文件是可以直接运行的
+关键字：对编译器有特殊意义的名字 C#里所有的值都是类型的实例。值的含义，变量可能拥有的值是什么，都由它的类型决定。
+构造函数与实例化： 数据是通过实例化一个类型来创建的 预定义的类型直接写 Literal（字面量）就可以被实例化了 而自定义类型则通过 new 操作符来创建实例 实例成员 vs 静态成员 操作于类型实例的数据成员和函数成员都叫做实例成员
+操作于类型而不是类型实例的数据成员和函数成员叫做静态成员
+static 静态类 static class 的所有成员都是静态的
+静态类不可以创建实例，例如 Console 类，它在整个应用程序就一份，这一份是共享的 NULL： NULL 是一个 Literal 可以把 null 赋值给引用（变量），表示该引用不指向任何一个对象 null.Property 会抛出 NullReferenceException (空指针异常) 普通的值类型不可为 null 但是 C#中有一中可空类型（nullable types）来表示值类型的 null 内置类型： 全部都在 System 命名空间下
+除了 decimal 之外的内置类型都叫做原始类型" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://zlim530.github.io/posts/variousnotes/second_post/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-05-31T16:15:48+08:00" />
+<meta property="article:modified_time" content="2023-05-31T16:15:48+08:00" />
+<meta itemprop="name" content="真会 C# 系列视频笔记">
+<meta itemprop="description" content="真会 C# 系列视频笔记 编译： C# 编译器把 .cs 结尾的源码文件编译成 Assembly
+Assembly 是 .NET Core 里的包装和部署的单元
+Assembly 可以是应用程序，也可以是库
+.exe dll 针对于 .NET Core 应用，编译只会生成 .DLL 文件：
+DLL 文件是可以直接运行的
+关键字：对编译器有特殊意义的名字 C#里所有的值都是类型的实例。值的含义，变量可能拥有的值是什么，都由它的类型决定。
+构造函数与实例化： 数据是通过实例化一个类型来创建的 预定义的类型直接写 Literal（字面量）就可以被实例化了 而自定义类型则通过 new 操作符来创建实例 实例成员 vs 静态成员 操作于类型实例的数据成员和函数成员都叫做实例成员
+操作于类型而不是类型实例的数据成员和函数成员叫做静态成员
+static 静态类 static class 的所有成员都是静态的
+静态类不可以创建实例，例如 Console 类，它在整个应用程序就一份，这一份是共享的 NULL： NULL 是一个 Literal 可以把 null 赋值给引用（变量），表示该引用不指向任何一个对象 null.Property 会抛出 NullReferenceException (空指针异常) 普通的值类型不可为 null 但是 C#中有一中可空类型（nullable types）来表示值类型的 null 内置类型： 全部都在 System 命名空间下
+除了 decimal 之外的内置类型都叫做原始类型"><meta itemprop="datePublished" content="2023-05-31T16:15:48+08:00" />
+<meta itemprop="dateModified" content="2023-05-31T16:15:48+08:00" />
+<meta itemprop="wordCount" content="4453">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="真会 C# 系列视频笔记"/>
+<meta name="twitter:description" content="真会 C# 系列视频笔记 编译： C# 编译器把 .cs 结尾的源码文件编译成 Assembly
+Assembly 是 .NET Core 里的包装和部署的单元
+Assembly 可以是应用程序，也可以是库
+.exe dll 针对于 .NET Core 应用，编译只会生成 .DLL 文件：
+DLL 文件是可以直接运行的
+关键字：对编译器有特殊意义的名字 C#里所有的值都是类型的实例。值的含义，变量可能拥有的值是什么，都由它的类型决定。
+构造函数与实例化： 数据是通过实例化一个类型来创建的 预定义的类型直接写 Literal（字面量）就可以被实例化了 而自定义类型则通过 new 操作符来创建实例 实例成员 vs 静态成员 操作于类型实例的数据成员和函数成员都叫做实例成员
+操作于类型而不是类型实例的数据成员和函数成员叫做静态成员
+static 静态类 static class 的所有成员都是静态的
+静态类不可以创建实例，例如 Console 类，它在整个应用程序就一份，这一份是共享的 NULL： NULL 是一个 Literal 可以把 null 赋值给引用（变量），表示该引用不指向任何一个对象 null.Property 会抛出 NullReferenceException (空指针异常) 普通的值类型不可为 null 但是 C#中有一中可空类型（nullable types）来表示值类型的 null 内置类型： 全部都在 System 命名空间下
+除了 decimal 之外的内置类型都叫做原始类型"/>
+</head>
+<body>
+  
+  <div class="header-container gradient">
+  <div class="container">
+  <nav class="header-nav navbar navbar-expand-md navbar-dark light-dark">
+    <div class="header-logo navbar-brand">
+      
+        <a class="float-left" href="https://zlim530.github.io/">
+      
+        
+        
+          Zlim530 Blog Site
+         
+      </a>
+    </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="nav-menu collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        
+          <li class="nav-item">
+            
+              
+                <a class="nav-link" href="https://zlim530.github.io/posts/">Posts</a>
+              
+            
+          </li>
+        
+          <li class="nav-item">
+            
+              
+                <a class="nav-link" href="https://zlim530.github.io/tags/">Tags</a>
+              
+            
+          </li>
+        
+          <li class="nav-item">
+            
+              
+                <a class="nav-link" href="https://github.com"><span data-feather='github'></span></a>
+              
+            
+          </li>
+        
+          <li class="nav-item">
+            
+              <a class="nav-link" href="https://zlim530.github.io/zh-tw/about/">關於</a>
+            
+          </li>
+        
+        
+      </ul>
+    </div>
+  </nav>
+</div>
+
+<div class="container header-wrapper">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="header-content">
+        <h1 class="header-title text-uppercase">
+          真会 C# 系列视频笔记
+        </h1>
+        <div class="header-underline"></div>
+        
+
+      </div>
+    </div>
+  </div>
+</div>
+
+  </div>
+  <main>
+<div class="container content">
+  <h2 id="真会-c-系列视频笔记">真会 C# 系列视频笔记</h2>
+<h3 id="编译">编译：</h3>
+<ul>
+<li>
+<p><strong>C# 编译器把 .cs 结尾的源码文件编译成 Assembly</strong></p>
+</li>
+<li>
+<p><strong>Assembly 是 .NET Core 里的包装和部署的单元</strong></p>
+</li>
+<li>
+<p><strong>Assembly 可以是应用程序，也可以是库</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>.exe</strong></li>
+<li><strong>dll</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>针对于 .NET Core 应用，编译只会生成 .DLL 文件：</strong></p>
+</li>
+<li>
+<p><strong>DLL 文件是可以直接运行的</strong></p>
+</li>
+</ul>
+<!-- raw HTML omitted -->
+<h3 id="关键字对编译器有特殊意义的名字"><strong>关键字：对编译器有特殊意义的名字</strong></h3>
+<p><strong>C#里所有的值都是类型的实例。值的含义，变量可能拥有的值是什么，都由它的类型决定。</strong></p>
+<h3 id="构造函数与实例化"><strong>构造函数与实例化：</strong></h3>
+<ul>
+<li><strong>数据是通过实例化一个类型来创建的</strong></li>
+<li><strong>预定义的类型直接写 Literal（字面量）就可以被实例化了</strong></li>
+<li><strong>而自定义类型则通过 new 操作符来创建实例</strong></li>
+</ul>
+<h3 id="实例成员-vs-静态成员"><strong>实例成员 vs 静态成员</strong></h3>
+<ul>
+<li>
+<p><strong>操作于类型实例的数据成员和函数成员都叫做实例成员</strong></p>
+</li>
+<li>
+<p><strong>操作于类型而不是类型实例的数据成员和函数成员叫做静态成员</strong></p>
+<ul>
+<li><strong>static</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>静态类 static class 的所有成员都是静态的</strong></p>
+<ul>
+<li><strong>静态类不可以创建实例，例如 Console 类，它在整个应用程序就一份，这一份是共享的</strong></li>
+</ul>
+</li>
+</ul>
+<h3 id="null"><strong>NULL：</strong></h3>
+<ul>
+<li><strong>NULL 是一个 Literal</strong></li>
+<li><strong>可以把 null 赋值给引用（变量），表示该引用不指向任何一个对象</strong></li>
+<li><strong>null.Property 会抛出 NullReferenceException (空指针异常)</strong></li>
+<li><strong>普通的值类型不可为 null</strong></li>
+<li><strong>但是 C#中有一中可空类型（nullable types）来表示值类型的 null</strong></li>
+</ul>
+<h3 id="内置类型"><strong>内置类型：</strong></h3>
+<ul>
+<li>
+<p><strong>全部都在 System 命名空间下</strong></p>
+</li>
+<li>
+<p><strong>除了 decimal 之外的内置类型都叫做原始类型</strong></p>
+<ul>
+<li>原始类型：即被编译器直接支持的类型：通过指令，在编译的代码里直接支持，通常被翻译成底层处理器直接的支持</li>
+</ul>
+</li>
+<li>
+<p><strong>System.IntPtr 和 System.UIntPrt 也是原始类型</strong></p>
+</li>
+</ul>
+<p><strong>数值 Literal 的类型推断</strong></p>
+<ul>
+<li>
+<p><strong>默认情况下，编译器会推断一个数值 Literal 是 double 还是整数类型：</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>如果包含小数点，或以指数形式展示，那么就是 double 类型</strong></li>
+<li><strong>否则 literal 的类型是下面列表里第一个能容纳该数值的类型：int，uint，long，ulong</strong></li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args){
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#ae81ff">1.0</span>.GetType());<span style="color:#75715e">// System.Double</span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#ae81ff">1e06</span>.GetType());<span style="color:#75715e">// System.Double</span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#ae81ff">1.</span>GetType());<span style="color:#75715e">// System.Int32</span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#ae81ff">0xF000</span>_0000.GetType());<span style="color:#75715e">// System.UInt32</span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#ae81ff">0x10000</span>_0000.GetType());<span style="color:#75715e">// System.Int64</span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#ae81ff">0</span>b1100_0010.GetType());<span style="color:#75715e">// System.Int32</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="数值的后缀"><strong>数值的后缀：</strong></h3>
+<ul>
+<li><strong>U、L 很少使用，因为 uint、long、ulong 要么可以被推断出来，要么可以从 int 隐式转换过来</strong></li>
+<li><strong>D 其实很多余：因为小数默认就是 double 类型</strong></li>
+<li><strong>F、M 是比较有用的，当指定 float 或者 decimal 的 Literal 的时候，应该加上，否则会报错</strong></li>
+</ul>
+<h3 id="注意"><strong>注意：</strong></h3>
+<ul>
+<li><strong>当从浮点型转为整型时，小数部分是被截断的，没有舍入</strong></li>
+<li><strong>当一个很大的整数隐式的转换为浮点类型之后，会保证量级不变，但是偶尔会丢失精度，这是因为浮点类型有更多的量级，而精度可能不足</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">10000_0001</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">float</span> f = i;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> i2 = (<span style="color:#66d9ef">int</span>)f;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Console.WriteLine(i);<span style="color:#75715e">//  100000001</span>
+</span></span><span style="display:flex;"><span>Console.WriteLine(f);<span style="color:#75715e">//  100000000</span>
+</span></span><span style="display:flex;"><span>Console.WriteLine(i2);<span style="color:#75715e">// 100000000</span>
+</span></span></code></pre></div><h3 id="除法"><strong>除法：</strong></h3>
+<ul>
+<li><strong>针对整型的除法操作，会截断余数</strong></li>
+<li><strong>除数变量为0，会抛出 DivideByZeroException，运行时异常</strong></li>
+<li><strong>除数 Literal 为0，会出现编译错误，即编译不通过</strong></li>
+</ul>
+<h3 id="overflow-checked-操作符"><strong>Overflow checked 操作符：</strong></h3>
+<ul>
+<li><strong>checked 会告诉运行时（CLR），如果整型表达式或语句超出了该类型的极限，那么就会抛出 OverflowException（默认溢出是不会抛出的，而是会环绕当前类型的值）</strong></li>
+<li><strong>checked 操作符对 ++、&ndash;、+-、-*、/ 起作用</strong></li>
+<li><strong>checked 可以用于表达式或语句</strong></li>
+<li><strong>checked 对 float、double 不起作用，因为它们有无限值，即可以无限大或者无限小（float.NegetiveInfinity double.PositiveInfinity）</strong></li>
+</ul>
+<p><img src="https://gitee.com/zlim/pic-go-figure-server/raw/master/20210821205802.png" alt="img"></p>
+<p><strong>实例：</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>Console.WriteLine(<span style="color:#ae81ff">1.0</span> / <span style="color:#ae81ff">0.0</span> );<span style="color:#75715e">// ∞</span>
+</span></span><span style="display:flex;"><span>Console.WriteLine(-<span style="color:#ae81ff">1.0</span> / <span style="color:#ae81ff">0.0</span> );<span style="color:#75715e">// -∞</span>
+</span></span><span style="display:flex;"><span>Console.WriteLine(<span style="color:#ae81ff">1.0</span> / -<span style="color:#ae81ff">0.0</span> );<span style="color:#75715e">// -∞</span>
+</span></span><span style="display:flex;"><span>Console.WriteLine(-<span style="color:#ae81ff">1.0</span> / -<span style="color:#ae81ff">0.0</span> );<span style="color:#75715e">// ∞</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Console.WriteLine(<span style="color:#ae81ff">0.0</span> / <span style="color:#ae81ff">0.0</span> );<span style="color:#75715e">// NaN</span>
+</span></span><span style="display:flex;"><span>Console.WriteLine((<span style="color:#ae81ff">1.0</span> / <span style="color:#ae81ff">0.0</span>) - (<span style="color:#ae81ff">1.0</span> / <span style="color:#ae81ff">0.0</span>) );<span style="color:#75715e">// NaN</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Console.WriteLine( (<span style="color:#ae81ff">0.0</span> / <span style="color:#ae81ff">0.0</span> ) == <span style="color:#66d9ef">double</span>.NaN );<span style="color:#75715e">// False</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Console.WriteLine(<span style="color:#66d9ef">object</span>.Equals(<span style="color:#ae81ff">0.0</span> / <span style="color:#ae81ff">0.0</span> ,<span style="color:#66d9ef">double</span>.NaN) );<span style="color:#75715e">// True</span>
+</span></span></code></pre></div><h3 id="关于-nan"><strong>关于 NaN：</strong></h3>
+<ul>
+<li><strong>使用 == 时，NaN 不等于任何一个值，包括 NaN</strong></li>
+<li><strong>使用 Object.Equals() 方法时（需重写该方法），两个 NaN 是相等的</strong></li>
+<li><strong>验证某个值是否为 NaN，可以用：float.IsNaN()，double.IsNaN()</strong></li>
+</ul>
+<p><img src="https://gitee.com/zlim/pic-go-figure-server/raw/master/20210821205818.png" alt="img"></p>
+<h3 id="实数的舍入错误"><strong>实数的舍入错误：</strong></h3>
+<ul>
+<li><strong>float 和 double 是基于2来表示数值的</strong></li>
+<li><strong>只有可用2表示的数值才是准确的</strong></li>
+<li><strong>大多数带有小数部分的 literal 都不会被精确的表达出来</strong></li>
+<li><strong>decimal：是基于10的，所以可以精确的表达基于10的数据（包括2、5的数据）</strong></li>
+<li><strong>关于无限循环小数：double 和 decimal 都不可以精确的表达循环数据</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">decimal</span> m = <span style="color:#ae81ff">1</span>m / <span style="color:#ae81ff">6</span>m;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">double</span> d = <span style="color:#ae81ff">1.0</span> / <span style="color:#ae81ff">6.0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">decimal</span> mm = m + m + m + m + m + m;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">double</span> dd = d + d + d + d + d + d;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Console.WriteLine(mm == <span style="color:#ae81ff">1</span>m);<span style="color:#75715e">// False</span>
+</span></span><span style="display:flex;"><span>Console.WriteLine(dd &lt; <span style="color:#ae81ff">1.0</span>);<span style="color:#75715e">// True</span>
+</span></span></code></pre></div><h3 id="bool-特点"><strong>bool 特点：</strong></h3>
+<ul>
+<li><strong>System.Boolean 的别名</strong></li>
+<li><strong>只有两个取值：true、false（Literal）</strong></li>
+<li><strong>只需要1 bit 的存储空间，但是运行时(CLR)会使用1 byte 内存存储（因为运行时和处理器可以高效操作的最小的内存块就是1 byte 大小）</strong></li>
+<li><strong>针对数组，Framework 提供了 BitArray 类（System.Collection），在这里每个 bool 值只占用1 bit 内存</strong></li>
+<li><strong>bool 类型无法与值类型相互转换</strong></li>
+</ul>
+<h3 id="-与--条件操作符"><strong>&amp; 与 | 条件操作符：</strong></h3>
+<ul>
+<li><strong>&amp; 和 | 也可以用来判断“与”和“或”的条件</strong></li>
+<li><strong>但是 &amp; 和 | 没有短路机制，所以很少用在条件判断上</strong></li>
+<li><strong>但使用在数值上时，&amp; 和 | 执行的是按位操作</strong></li>
+</ul>
+<h3 id="转义字符"><strong>转义字符：</strong></h3>
+<ul>
+<li>
+<p><strong>表示无法按字面意思表达的字符</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>'		0x0027			Single quote</strong></li>
+<li><strong>&quot;		0x0022			Double quote</strong></li>
+<li><strong>\		0x005c			Baskslash</strong></li>
+<li><strong>\0		0x0000			Null</strong></li>
+<li><strong>\a		0x0007			Alert</strong></li>
+<li><strong>\b		0x0008			Backspace</strong></li>
+<li><strong>\f		0x000C			Form feed</strong></li>
+<li><strong>\n		0x000A			New line</strong></li>
+<li><strong>\r 		0x000D			Carriage return</strong></li>
+<li><strong>\t		0x0009			Horizontal tab</strong></li>
+<li><strong>\v		0x000B			Vertical tab</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>\u（\x）可以使用4位16进行来表示字符</strong></p>
+</li>
+<li>
+<p><strong>例如：</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>char copyright = &lsquo;\u00A9&rsquo;;</strong></li>
+<li><strong>char omega = &lsquo;\u03A9&rsquo;;</strong></li>
+<li><strong>char newline = &lsquo;\u000A&rsquo;;</strong></li>
+</ul>
+</li>
+</ul>
+<h3 id="string-类型"><strong>string 类型：</strong></h3>
+<ul>
+<li><strong>System.String</strong></li>
+<li><strong>表示一串不可变的 Unicode 字符</strong></li>
+<li><strong>Literal：&ldquo;a string&rdquo;</strong></li>
+<li><strong>是一种引用类型</strong></li>
+<li><strong>但是对字符串变量使用 == 操作符比较的是 string 的值（注：对于其他引用变量，使用 == 操作符是比较他们的引用是否为同一个）</strong></li>
+<li><strong>使用于 char 的转义字符都使用于 string</strong></li>
+</ul>
+<h3 id="逐字字符串verbatim-string-literal"><strong>逐字字符串（verbatim string literal）：</strong></h3>
+<ul>
+<li>
+<p><strong>在双引号外面使用 @ 做前缀</strong></p>
+</li>
+<li>
+<p><strong>不支持转义字符</strong></p>
+</li>
+<li>
+<p><strong>支持多行字符串</strong></p>
+</li>
+<li>
+<p><strong>下面两字符串的值相同：</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>string a1 = &ldquo;\\server\fileshare\helloworld.cs&rdquo;;</strong></li>
+<li><strong>string a1 = @&quot;\server\fileshare\helloworld.cs&quot;;</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>想在字符串里面输入双引号，就输入两次双引号</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>string xml = @&quot;&quot;;</strong></li>
+</ul>
+</li>
+</ul>
+<h3 id="字符串连接"><strong>字符串连接：</strong></h3>
+<ul>
+<li><strong>使用 + 操作符</strong></li>
+<li><strong>如果其中一个操作数不是 string 类型，那么会调用它的 ToString() 方法</strong></li>
+<li><strong>大量使用 + 做字符串连接的效率很低，最好使用 StringBuilder 类型</strong></li>
+</ul>
+<h3 id="字符串插值string-interpolation"><strong>字符串插值（string interpolation）：</strong></h3>
+<ul>
+<li>
+<p><strong>是 C# 6之后的语法</strong></p>
+</li>
+<li>
+<p><strong>在双引号前面使用 $ 做前缀</strong></p>
+</li>
+<li>
+<p><strong>可包含表达式（需要在{}内）</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>int x = 4; Console.WriteLine($&ldquo;A square has {x} sides&rdquo;);</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>任何 C# 表达式都可以出现在 {} 内，会调用 ToString() 或者其他等效方法</strong></p>
+</li>
+<li>
+<p><strong>可以改变表达式的显示格式，使用 : 操作符，后边跟着格式化字符串</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>string s = $&ldquo;255 in hex is {byte.MaxValue:X2}&rdquo;;</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>默认只支持单行，除非使用 @ ，并且 $ 需要在 @ 前面</strong></p>
+</li>
+<li>
+<p><strong>如果想输入 { ，就需要输入 {{</strong></p>
+</li>
+</ul>
+<h3 id="数组"><strong>数组：</strong></h3>
+<ul>
+<li>
+<p><strong>表示了一组特定类型且数量固定的变量（也称为元素）</strong></p>
+</li>
+<li>
+<p><strong>数组的元素总是存储在连续的内存块里，读取效率高</strong></p>
+</li>
+<li>
+<p><strong>所有的数组都继承于 System.Array 类</strong></p>
+</li>
+<li>
+<p><strong>数组的声明：</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>char[] vowels  = new char[5];</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>按索引访问元素（从0开始）：</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>vowels[0] = &lsquo;a&rsquo;;</strong></li>
+<li><strong>vowels[1] = &lsquo;b&rsquo;;</strong></li>
+<li><strong>Console.WriteLine(vowels[1]);// b</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>数组的长度（元素的个数），通过 Length 属性访问（属性相当于是一个函数）</strong></p>
+</li>
+<li>
+<p><strong>可以使用 for 循环来遍历数组</strong></p>
+</li>
+<li>
+<p><strong>数组长度是固定的，一旦数组被创建，那么长度就是不可以改变的</strong></p>
+</li>
+<li>
+<p><strong>在 System.Collection 和其子命名空间中提供了更高级的数据结构，包括可变长度的数组和字典</strong></p>
+</li>
+<li>
+<p><strong>数组初始化：</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>char[] vowels = new char[]{&lsquo;a&rsquo;,&rsquo;e&rsquo;,&lsquo;i&rsquo;,&lsquo;o&rsquo;,&lsquo;u&rsquo;};// 标准写法</strong></li>
+<li><strong>char[] vowels = {&lsquo;a&rsquo;,&rsquo;e&rsquo;,&lsquo;i&rsquo;,&lsquo;o&rsquo;,&lsquo;u&rsquo;};// 简略写法</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>默认的元素初始化：</strong></p>
+</li>
+<li>
+<ul>
+<li>
+<p><strong>创建数组时，所有的元素都会被初始化，其值为改类型的默认值</strong></p>
+</li>
+<li>
+<p><strong>类型的默认值就是内存按位归零的结果</strong></p>
+</li>
+<li>
+<p><strong>例如：</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>int[] a = new int[1000];</strong></li>
+<li><strong>Console.WriteLine(a[123]);// 0</strong></li>
+</ul>
+</li>
+<li></li>
+</ul>
+</li>
+</ul>
+<h3 id="值类型元素的数组-vs-引用类型元素的数组"><strong>值类型元素的数组 vs 引用类型元素的数组</strong></h3>
+<ul>
+<li>
+<p><strong>性能有区别</strong></p>
+</li>
+<li>
+<p><strong>值类型：每个元素都作为数组的一部分进行分配内存</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>整个数组就是在一个连续的内存块里面，把元素和数组都包括在里面</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>引用类型：创建数组时就是创建了一堆 null 引用</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>建议对元素是引用类型的数组初始化后对数组的元素都进行初始化，避免发生异常</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>数组本身是引用类型</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>int[] a = null;// ok的</strong></li>
+</ul>
+</li>
+<li></li>
+</ul>
+<h3 id="多维数组"><strong>多维数组：</strong></h3>
+<ul>
+<li>
+<p><strong>矩形数组 rectangular array</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>代表着 n 维内存块</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>交错数组 jagged array</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>元素类型为数组的数组</strong></li>
+</ul>
+</li>
+<li></li>
+</ul>
+<h4 id="矩形数组"><strong>矩形数组：</strong></h4>
+<ul>
+<li>
+<p><strong>使用逗号来分割维度</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>int[,] matrix = new int[3,3];</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>GetLength(维度)方法可以返回指定维度的长度</strong></p>
+</li>
+<li>
+<p><strong>初始化：</strong></p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">int</span>[,] matrix = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span>[<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">3</span>];
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>;i &lt; matrix.GetLength(<span style="color:#ae81ff">0</span>);i++){
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> j = <span style="color:#ae81ff">0</span>;j &lt; matrix.GetLength(<span style="color:#ae81ff">1</span>);j++){
+</span></span><span style="display:flex;"><span>        matrix[i,j] = i *  <span style="color:#ae81ff">3</span> + j;
+</span></span><span style="display:flex;"><span>        System.Console.Write(matrix[i,j]);
+</span></span><span style="display:flex;"><span>        System.Console.Write(<span style="color:#e6db74">&#34;\t&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    System.Console.WriteLine();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">0       1       2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">3       4       5
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">6       7       8
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">*/</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span>[,] matrix2 = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span>[,]{
+</span></span><span style="display:flex;"><span>    {<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>},
+</span></span><span style="display:flex;"><span>    {<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">5</span>},
+</span></span><span style="display:flex;"><span>    {<span style="color:#ae81ff">6</span>,<span style="color:#ae81ff">7</span>,<span style="color:#ae81ff">8</span>}
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><h4 id="交错数组"><strong>交错数组：</strong></h4>
+<ul>
+<li>
+<p><strong>使用连续的中括号来声明和代表不同的维度</strong></p>
+</li>
+<li>
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">int</span>[][] matrix = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span>[][<span style="color:#ae81ff">3</span>];
+</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p><strong>内层维度并没有具体的指明，内层维度的数组可以是任意长度</strong></p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">int</span>[][] matrix = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span>[<span style="color:#ae81ff">3</span>][];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>;i &lt; matrix.GetLength(<span style="color:#ae81ff">0</span>);i ++){
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    matrix[i] = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span>[i + <span style="color:#ae81ff">3</span>];
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> j = <span style="color:#ae81ff">0</span>;j &lt; matrix[i].Length;j++){
+</span></span><span style="display:flex;"><span>        matrix[i][j] = i * (matrix[i].Length - <span style="color:#ae81ff">1</span>) + j;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        System.Console.Write(matrix[i][j]);
+</span></span><span style="display:flex;"><span>        System.Console.Write(<span style="color:#e6db74">&#34;\t&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    System.Console.WriteLine();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">0       1       2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">3       4       5       6
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">8       9       10      11      12
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">*/</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span>[][] matrix = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span>[<span style="color:#ae81ff">3</span>][]{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span>[]{<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>},
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span>[]{<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">4</span>},
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span>[]{<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">5</span>}
+</span></span><span style="display:flex;"><span>};      
+</span></span></code></pre></div><h3 id="简化数组初始化的表达式"><strong>简化数组初始化的表达式：</strong></h3>
+<ul>
+<li>
+<p><strong>char vowels = new char[]{&lsquo;a&rsquo;,&rsquo;e&rsquo;,&lsquo;i&rsquo;,&lsquo;o&rsquo;,&lsquo;u&rsquo;};</strong></p>
+</li>
+<li>
+<p><strong>char[] vowels = {&lsquo;a&rsquo;,&rsquo;e&rsquo;,&lsquo;i&rsquo;,&lsquo;o&rsquo;,&lsquo;u&rsquo;};</strong></p>
+</li>
+<li>
+<p><strong>推断类型：var vowels = new char[]{&lsquo;a&rsquo;,&rsquo;e&rsquo;,&lsquo;i&rsquo;,&lsquo;o&rsquo;,&lsquo;u&rsquo;};</strong></p>
+</li>
+<li>
+<p><strong>推断类型：所有的元素必须可以隐式转换为某一个类型</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>var x = new[]{1,10000_0000_0000};// long 类型数组</strong></li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">char</span>[] vowels = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">char</span>[]{<span style="color:#e6db74">&#39;a&#39;</span>,<span style="color:#e6db74">&#39;e&#39;</span>,<span style="color:#e6db74">&#39;i&#39;</span>,<span style="color:#e6db74">&#39;o&#39;</span>,<span style="color:#e6db74">&#39;u&#39;</span>};
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">char</span>[] vowels1 = {<span style="color:#e6db74">&#39;a&#39;</span>,<span style="color:#e6db74">&#39;e&#39;</span>,<span style="color:#e6db74">&#39;i&#39;</span>,<span style="color:#e6db74">&#39;o&#39;</span>,<span style="color:#e6db74">&#39;u&#39;</span>};
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> vowels2 = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">char</span>[] {<span style="color:#e6db74">&#39;a&#39;</span>,<span style="color:#e6db74">&#39;e&#39;</span>,<span style="color:#e6db74">&#39;i&#39;</span>,<span style="color:#e6db74">&#39;o&#39;</span>,<span style="color:#e6db74">&#39;u&#39;</span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>;i &lt; vowels2.Length;i++){
+</span></span><span style="display:flex;"><span>   System.Console.WriteLine(vowels[i]);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>  System.Console.WriteLine(vowels2.GetType());
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// System.Char[]</span>
+</span></span></code></pre></div><h3 id="边界检查"><strong>边界检查：</strong></h3>
+<ul>
+<li><strong>所有数组的索引都会被运行时（CLR）检查的</strong></li>
+<li><strong>如果使用了不合理的索引，会抛出 IndexOutOfRangeException</strong></li>
+<li><strong>通常边界检查对性能的影响很小，JIT(Just-In Time)编译器可执行一些优化，例如在进入循环前预先对所有的索引进行安全检测，避免在迭代中检查</strong></li>
+<li><strong>C# 还提供了 &ldquo;unsafe&rdquo; 代码，可以绕过边界检查</strong></li>
+</ul>
+<h3 id="确定赋值-definite-assinment"><strong>确定赋值 Definite Assinment：</strong></h3>
+<ul>
+<li>
+<p><strong>除非使用 unsafe，否则在 C#里无法访问未初始化的内存</strong></p>
+</li>
+<li>
+<p><strong>Definite Assignment 的三个含义：</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>本地变量在被读取之前必须被赋值</strong></li>
+<li><strong>当方法被调用的时候，函数的参数必须被提供（除非是可选参数）</strong></li>
+<li><strong>其他的变量（字段、数组元素）会被运行时（CLR）自动初始化</strong></li>
+</ul>
+</li>
+<li></li>
+</ul>
+<h3 id="默认值"><strong>默认值：</strong></h3>
+<ul>
+<li>
+<p><strong>所有类型的实例都有默认值</strong></p>
+</li>
+<li>
+<p><strong>预定义类型的默认值就是内存按位归零的结果</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>All reference types					    null</strong></li>
+<li><strong>All numeric and enum types			0</strong></li>
+<li><strong>char type							           &lsquo;\0&rsquo;</strong></li>
+<li><strong>bool type							        False</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>通过 default 关键字来获取任何类型的默认值</strong></p>
+</li>
+<li>
+<p><strong>自定义值类型（struct）的默认值就是该自定义类型定义的每个字段的默认值</strong></p>
+</li>
+</ul>
+<p><img src="https://gitee.com/zlim/pic-go-figure-server/raw/master/20210821205844.png" alt="img"></p>
+<h3 id="按引用传递-out"><strong>按引用传递 out：</strong></h3>
+<ul>
+<li>
+<p><strong>和 ref 参数差不多，除了</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>进入函数前不需要被赋值</strong></li>
+<li><strong>离开函数前必须被赋值</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>通常用来从方法返回多个值</strong></p>
+</li>
+</ul>
+<h4 id="out-变量"><strong>out 变量：</strong></h4>
+<ul>
+<li><strong>从 C# 7 开始，调用方法时，可以使用 out 临时声明变量</strong></li>
+<li><strong>当调用的方法有多个 out 参数时，你不需要其中一些参数，可以使用下划线&quot;_&ldquo;来 discard（弃用）它们</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args){
+</span></span><span style="display:flex;"><span>    Split(<span style="color:#e6db74">&#34;Stevie Ray Vaughan&#34;</span>,<span style="color:#66d9ef">out</span> <span style="color:#66d9ef">string</span> a,<span style="color:#66d9ef">out</span> <span style="color:#66d9ef">string</span> b);
+</span></span><span style="display:flex;"><span>    System.Console.WriteLine(a);<span style="color:#75715e">// Stevie Ray</span>
+</span></span><span style="display:flex;"><span>    System.Console.WriteLine(b);<span style="color:#75715e">// Vaughan</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Split(<span style="color:#e6db74">&#34;Stevie Ray Vaughan&#34;</span>,<span style="color:#66d9ef">out</span> <span style="color:#66d9ef">string</span> c,<span style="color:#66d9ef">out</span> _);
+</span></span><span style="display:flex;"><span>    System.Console.WriteLine(c);<span style="color:#75715e">// Stevie Ray</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Split(<span style="color:#66d9ef">string</span> name,<span style="color:#66d9ef">out</span> <span style="color:#66d9ef">string</span> firstNames,<span style="color:#66d9ef">out</span> <span style="color:#66d9ef">string</span> lastName){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> i = name.LastIndexOf(<span style="color:#e6db74">&#39; &#39;</span>);
+</span></span><span style="display:flex;"><span>    firstNames = name.Substring(<span style="color:#ae81ff">0</span>,i);
+</span></span><span style="display:flex;"><span>    lastName = name.Substring(i+<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> x;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args){
+</span></span><span style="display:flex;"><span>    Foo(<span style="color:#66d9ef">out</span> x);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Foo(<span style="color:#66d9ef">out</span> <span style="color:#66d9ef">int</span> y){
+</span></span><span style="display:flex;"><span>    System.Console.WriteLine(x);<span style="color:#75715e">// x is 0</span>
+</span></span><span style="display:flex;"><span>    y = <span style="color:#ae81ff">1</span>;<span style="color:#75715e">// Mutate y</span>
+</span></span><span style="display:flex;"><span>    System.Console.WriteLine(x);<span style="color:#75715e">// x is 1</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="params-修饰符"><strong>params 修饰符：</strong></h3>
+<ul>
+<li><strong>可以在方法的最后一个参数使用 params 参数修饰符</strong></li>
+<li><strong>可以接收任意数量的该类型的参数</strong></li>
+<li><strong>参数（parameters）类型必须是数组</strong></li>
+<li><strong>也可以使用数组作为 arguments</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args){
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> total = Sum(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">4</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// int total = Sum(new int[]{1,2,3,4});</span>
+</span></span><span style="display:flex;"><span>    System.Console.WriteLine(total);<span style="color:#75715e">// 10</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> Sum(<span style="color:#66d9ef">params</span> <span style="color:#66d9ef">int</span>[] ints){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> sum = <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">0</span>;i &lt; ints.Length;i++){
+</span></span><span style="display:flex;"><span>        sum += ints[i];
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> sum;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="可选参数"><strong>可选参数：</strong></h3>
+<ul>
+<li>
+<p><strong>从 C# 4.0开始，构造函数、索引器都可以声明为可选参数</strong></p>
+</li>
+<li>
+<p><strong>可选参数需要在声明的时候提供默认值</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>void Foo(int x = 23){ Console.WriteLine(x); }</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>调用时可以不填写可选的 parameters</strong></p>
+</li>
+<li>
+<p><strong>Foo(); 相当于 Foo(0,0); 编译器在调用方法时把0,0写死进去</strong></p>
+</li>
+<li>
+<p><strong>往 public 方法里添加可选参数，若该方法被其他的 Assembly 调用，那么两个 Assemblies 都需要重新编译，就和添加了一个必填的参数是一样的</strong></p>
+</li>
+<li>
+<p><strong>可选参数的默认值必须是常量表达式或是拥有无参构造函数的值类型</strong></p>
+</li>
+<li>
+<p><strong>可选参数不可以使用 ref 和 out</strong></p>
+</li>
+<li>
+<p><strong>必填参数必须在可选参数前面：不管是在方法声明时还是在方法调用时</strong></p>
+</li>
+<li>
+<p><strong>例外：params 的参数仍染放在最后边</strong></p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args){
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Foo(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>    Foo();
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    1,0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    0,0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    */</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Foo(<span style="color:#66d9ef">int</span> x =<span style="color:#ae81ff">0</span>, <span style="color:#66d9ef">int</span> y = <span style="color:#ae81ff">0</span>){
+</span></span><span style="display:flex;"><span>    System.Console.WriteLine(x + <span style="color:#e6db74">&#34;,&#34;</span> + y);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args){
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Foo(<span style="color:#ae81ff">1</span>);<span style="color:#75715e">// 1,System.Int32[]</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Foo(<span style="color:#66d9ef">int</span> x =<span style="color:#ae81ff">0</span>, <span style="color:#66d9ef">params</span> <span style="color:#66d9ef">int</span>[] y ){
+</span></span><span style="display:flex;"><span>    System.Console.WriteLine(x + <span style="color:#e6db74">&#34;,&#34;</span> + y);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="命名参数"><strong>命名参数：</strong></h3>
+<ul>
+<li><strong>可以不按位置来区别 arguments</strong></li>
+<li><strong>使用名称来定位 arguments</strong></li>
+<li><strong>命名的 arguments 可以按任意顺序填写</strong></li>
+<li><strong>Arguments 表达式被计算出的顺序和它们在调用时地出现的顺序一致</strong></li>
+<li><strong>可混合使用按位参数和命名参数</strong></li>
+<li><strong>按位参数必须放在命名参数前</strong></li>
+<li><strong>可混合使用可选参数和命名参数</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args){
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Foo2(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>);      <span style="color:#75715e">// 1,2</span>
+</span></span><span style="display:flex;"><span>    Foo2(x:<span style="color:#ae81ff">1</span>,y:<span style="color:#ae81ff">2</span>);  <span style="color:#75715e">// 1,2</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Foo2(x:<span style="color:#ae81ff">1</span>,y:<span style="color:#ae81ff">2</span>);  <span style="color:#75715e">// 1,2</span>
+</span></span><span style="display:flex;"><span>    Foo2(y:<span style="color:#ae81ff">2</span>,x:<span style="color:#ae81ff">1</span>);  <span style="color:#75715e">// 1,2</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> a = <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    Foo2(y:++a,x:--a);<span style="color:#75715e">// 0,1: ++a is evaluated first</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> b = <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    Foo2(x:--b,y:++b);<span style="color:#75715e">// -1,0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Foo2(<span style="color:#66d9ef">int</span> x,<span style="color:#66d9ef">int</span> y){
+</span></span><span style="display:flex;"><span>    System.Console.WriteLine(x + <span style="color:#e6db74">&#34;,&#34;</span> + y);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="ref-locals"><strong>ref Locals：</strong></h3>
+<ul>
+<li>
+<p><strong>C# 7，可以定义一个本地变量，它引用了数组的一个元素或者对象的一个字段</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>int[] numbers = {0,1,2,3,4};</strong></li>
+<li><strong>ref int numRef = ref numbers[2];</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>numRef 就是对 numbers[2] 的引用，修改 numRef 的时候，就是修改 numbers[2] 这个元素</strong></p>
+</li>
+<li>
+<p><strong>Ref Local 的目标必须是数组中的元素、字段、本地变量。不可以是属性</strong></p>
+</li>
+<li>
+<p><strong>常用于微优化场景，通常与 ref returns 联合使用</strong></p>
+</li>
+</ul>
+<h3 id="ref-returns"><strong>ref returns：</strong></h3>
+<ul>
+<li><strong>可以从方法返回 ref local，这就叫做 ref return</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">int</span>[] numbers = {<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">4</span>};
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ref</span> <span style="color:#66d9ef">int</span> numRef = <span style="color:#66d9ef">ref</span> numbers[<span style="color:#ae81ff">2</span>];
+</span></span><span style="display:flex;"><span>numRef *= <span style="color:#ae81ff">10</span>;
+</span></span><span style="display:flex;"><span>System.Console.WriteLine(numRef);<span style="color:#75715e">// 20</span>
+</span></span><span style="display:flex;"><span>System.Console.WriteLine(numbers[<span style="color:#ae81ff">2</span>]);<span style="color:#75715e">// 20</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args){
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">ref</span> <span style="color:#66d9ef">string</span> xRef = <span style="color:#66d9ef">ref</span> GetX();<span style="color:#75715e">// Assign result to a ref local</span>
+</span></span><span style="display:flex;"><span>    xRef = <span style="color:#e6db74">&#34;New Value&#34;</span>;
+</span></span><span style="display:flex;"><span>    System.Console.WriteLine(X);<span style="color:#75715e">// New Value</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">ref</span> <span style="color:#66d9ef">string</span> GetX() =&gt; <span style="color:#66d9ef">ref</span> X;<span style="color:#75715e">// This method returns a ref</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">string</span> X = <span style="color:#e6db74">&#34;Old Value&#34;</span>;
+</span></span></code></pre></div><h3 id="var"><strong>var：</strong></h3>
+<ul>
+<li><strong>隐式强类型本地变量</strong></li>
+<li><strong>声明和初始化变量通常一步完成，如果编译器能从初始化表达式推断出类型，就可以使用 var</strong></li>
+<li><strong>会降低代码的可读性</strong></li>
+</ul>
+<h3 id="null-合并操作符"><strong>Null 合并操作符：</strong></h3>
+<ul>
+<li><strong>??</strong></li>
+<li><strong>含义：如果操作数不是 null，那么就把它给我；否则的话，给我一个默认值</strong></li>
+<li><strong>如果左边的表达式非 null，那么 ?? 右边表达式就不会被计算</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> s1 = <span style="color:#e6db74">&#34;something&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> s2 = s1 ?? <span style="color:#e6db74">&#34;nothing&#34;</span>;
+</span></span><span style="display:flex;"><span>    System.Console.WriteLine(s2);<span style="color:#75715e">// something</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    System.Text.StringBuilder sb = <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// string s = sb.ToString();// 抛出了 System.NullReferenecException</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> s = sb?.ToString();<span style="color:#75715e">// No error: s instead evaluates to null</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> s3 = sb == <span style="color:#66d9ef">null</span> ? <span style="color:#66d9ef">null</span> : sb.ToString();
+</span></span><span style="display:flex;"><span>    System.Console.WriteLine(s);
+</span></span><span style="display:flex;"><span>    System.Console.WriteLine(s3);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="null-条件操作符elvis"><strong>Null 条件操作符（Elvis）：</strong></h3>
+<ul>
+<li>
+<p><strong>C# 6 开始支持</strong></p>
+</li>
+<li>
+<p><strong>允许你像 . 成员访问操作符那样调用方法或者访问成员，除非当左边的操作数是 null 的时候，那么真个表达式的值就是 null，而不会抛出 NullReferenceException</strong></p>
+</li>
+<li>
+<p><strong>一旦遇到 null，这个操作符就会把剩余表达式短路掉</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>x?.y?.z</strong></li>
+<li><strong>等价于：x == null ? null : (x.y == null ? null : x.y.z)</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>最终的表达式必须可以接受 null</strong></p>
+</li>
+<li>
+<p><strong>可以和 Null 合并操作符一起使用</strong></p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>System.Text.StringBuilder sb1 = <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">string</span> s = sb1?.ToString().ToUpper();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// s evaluates to null without NullReferenecException</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>System.Text.StringBuilder sb = <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">string</span> s =  sb?.ToString() ?? <span style="color:#e6db74">&#34;nothing&#34;</span>;<span style="color:#75715e">// s evaluates to &#34;nothing&#34;</span>
+</span></span><span style="display:flex;"><span>System.Console.WriteLine(s);<span style="color:#75715e">// nothing</span>
+</span></span></code></pre></div><h3 id="语句-statement"><strong>语句 Statement：</strong></h3>
+<ul>
+<li><strong>函数由语句组成，这些语句按其出现的文本顺序执行</strong></li>
+<li><strong>语句块就是 {} 之间的一些列语句</strong></li>
+</ul>
+<h4 id="声明语句"><strong>声明语句：</strong></h4>
+<ul>
+<li><strong>声明一个新的变量，也可以使用表达式对该变量进行初始化</strong></li>
+<li><strong>声明语句以分号 ; 结束</strong></li>
+</ul>
+<h4 id="本地变量"><strong>本地变量：</strong></h4>
+<ul>
+<li><strong>本地变量/常量的作用范围是当前的块</strong></li>
+<li><strong>同一个块里面（包括里面嵌套的块）不可以声明重名的变量/常量</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">string</span> someWord = <span style="color:#e6db74">&#34;rosebud&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> someNumber = <span style="color:#ae81ff">23</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> rich = <span style="color:#66d9ef">true</span>,famous = <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> someNumber = <span style="color:#ae81ff">34</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 无法在从范围中声明为“someNumber”的局部变量或参数，因为该名称在封闭局部</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 范围中用于定义局部变量或参数</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="表达式语句"><strong>表达式语句：</strong></h4>
+<ul>
+<li>
+<p><strong>表达式语句是表达式，同样也是合理的语句</strong></p>
+</li>
+<li>
+<p><strong>表达式语句要么改变了状态，要么调用了可以改变状态的东西</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>改变状态其实就是指改变变量的值</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>几种可能的表达式语句：</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>赋值表达式（包括自增和自减表达式）</strong></li>
+<li><strong>方法调用表达式（void 和 非 void）</strong></li>
+<li><strong>对象实例化表达式</strong></li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#75715e">// Declare variables with declaration statements:</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">string</span> s;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> x,y;
+</span></span><span style="display:flex;"><span>System.Text.StringBuilder stringBuilder;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Expression statements</span>
+</span></span><span style="display:flex;"><span>x = <span style="color:#ae81ff">1</span> + <span style="color:#ae81ff">2</span>;<span style="color:#75715e">// Assignment expression</span>
+</span></span><span style="display:flex;"><span>x++;      <span style="color:#75715e">// Increment expression  </span>
+</span></span><span style="display:flex;"><span>y = Math.Max(x,<span style="color:#ae81ff">5</span>);<span style="color:#75715e">// Assignment expression </span>
+</span></span><span style="display:flex;"><span>Console.WriteLine(y);<span style="color:#75715e">// Method call expression </span>
+</span></span><span style="display:flex;"><span>stringBuilder = <span style="color:#66d9ef">new</span> StringBuilder();<span style="color:#75715e">// Assignment expression</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">new</span> StringBuilder();<span style="color:#75715e">// Object instantiation expres</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">new</span> StringBuilder();<span style="color:#75715e">// Legal,but useless</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">new</span> <span style="color:#66d9ef">string</span>(<span style="color:#e6db74">&#39;c&#39;</span>,<span style="color:#ae81ff">3</span>);  <span style="color:#75715e">// Legal,but useless</span>
+</span></span><span style="display:flex;"><span>x.Equals(y);        <span style="color:#75715e">// Legal,but useless</span>
+</span></span></code></pre></div><h4 id="switch-语句"><strong>switch 语句：</strong></h4>
+<ul>
+<li>
+<p><strong>当指定常量的时候，只能使用内置的整数类型、bool、char、enum 和 string 类型</strong></p>
+</li>
+<li>
+<p><strong>每个 case 子句的结尾，必须使用跳转语句来表明下一步往哪里执行：</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>break：跳到 switch 语句的结尾</strong></li>
+<li><strong>goto case x：跳转到其他 case</strong></li>
+<li><strong>goto default：跳转到 default 子句</strong></li>
+<li><strong>其他跳转语句：return、throw、continue、goto label</strong></li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> ShowCard(<span style="color:#66d9ef">int</span> cardNumber){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">switch</span>(cardNumber){
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">case</span> <span style="color:#ae81ff">13</span>:
+</span></span><span style="display:flex;"><span>            System.Console.WriteLine(<span style="color:#e6db74">&#34;King&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">case</span> <span style="color:#ae81ff">12</span>:
+</span></span><span style="display:flex;"><span>            System.Console.WriteLine(<span style="color:#e6db74">&#34;Queen&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">case</span> <span style="color:#ae81ff">11</span>:
+</span></span><span style="display:flex;"><span>            System.Console.WriteLine(<span style="color:#e6db74">&#34;Jack&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">case</span> -<span style="color:#ae81ff">1</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">goto</span> <span style="color:#66d9ef">case</span> <span style="color:#ae81ff">12</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>            System.Console.WriteLine(cardNumber);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">switch</span> (cardNumber){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> <span style="color:#ae81ff">13</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> <span style="color:#ae81ff">12</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> <span style="color:#ae81ff">11</span>:
+</span></span><span style="display:flex;"><span>        System.Console.WriteLine(<span style="color:#e6db74">&#34;Face card&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>        System.Console.WriteLine(<span style="color:#e6db74">&#34;Plain card&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="switch-with-patterns"><strong>switch with patterns：</strong></h4>
+<ul>
+<li>
+<p><strong>C# 7 开始</strong></p>
+</li>
+<li>
+<p><strong>object 类型允许任何类型的变量</strong></p>
+</li>
+<li>
+<p><strong>每个 case 子句指定一个类型，如果变量的类型与该类型一样，那么就匹配成功</strong></p>
+</li>
+<li>
+<p><strong>可以使用 when 来断言一个 case</strong></p>
+</li>
+<li>
+<p><strong>case 子句的顺序是有关系的</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>在前的 case 子句如果包含后续 case 子句的情况，则会报错</strong></li>
+<li><strong>因为编译器不知道该走哪个 case</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>可以 case null</strong></p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> TellMeTheType(<span style="color:#66d9ef">object</span> x){<span style="color:#75715e">// object allows any type</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">switch</span>(x){
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">int</span> i :
+</span></span><span style="display:flex;"><span>            System.Console.WriteLine(<span style="color:#e6db74">&#34;It&#39;s an int!&#34;</span>);
+</span></span><span style="display:flex;"><span>            System.Console.WriteLine(<span style="color:#e6db74">$&#34;The square of {i} is {i * i}&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">string</span> s:
+</span></span><span style="display:flex;"><span>            System.Console.WriteLine(<span style="color:#e6db74">&#34;It&#39;s a string&#34;</span>);
+</span></span><span style="display:flex;"><span>            System.Console.WriteLine(<span style="color:#e6db74">$&#34;The length of {s} is {s.Length}&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>            System.Console.WriteLine(<span style="color:#e6db74">&#34;I don&#39;t know what x is&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">switch</span>(x){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">bool</span> b when b == <span style="color:#66d9ef">true</span>:<span style="color:#75715e">// Fires only when b is true</span>
+</span></span><span style="display:flex;"><span>        System.Console.WriteLine(<span style="color:#e6db74">&#34;True!&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">bool</span> b:
+</span></span><span style="display:flex;"><span>        System.Console.WriteLine(<span style="color:#e6db74">&#34;False!&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">switch</span>(x){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">bool</span> b when b == <span style="color:#66d9ef">true</span>:
+</span></span><span style="display:flex;"><span>        System.Console.WriteLine(<span style="color:#e6db74">&#34;True!&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">bool</span> b:
+</span></span><span style="display:flex;"><span>        System.Console.WriteLine(<span style="color:#e6db74">&#34;False!&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">null</span>:
+</span></span><span style="display:flex;"><span>        System.Console.WriteLine(<span style="color:#e6db74">&#34;Nothing here&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="foreach-"><strong>foreach ：</strong></h4>
+<ul>
+<li><strong>迭代 enumerable 对象里的元素</strong></li>
+<li><strong>C# 里大部分集合类型都是 enumerable 的</strong></li>
+</ul>
+<p><strong>跳转语句 - 遵循 try 语句的可靠性原则：</strong></p>
+<ul>
+<li><strong>跳转出 try 块时，在到达跳转目标之前，总会先执行 try 的 finally 块</strong></li>
+<li><strong>不可以从 finally 块里跳转都外边，除了 throw</strong></li>
+</ul>
+<h4 id="return-语句"><strong>return 语句：</strong></h4>
+<ul>
+<li><strong>return 语句会退出方法，并返回一个表达式，该表达式的类型和方法的返回类型一致（方法不是 void 的）</strong></li>
+<li><strong>return 语句可以放在方法的任何一个地方，除了 finally 块中</strong></li>
+</ul>
+<h3 id="命名空间"><strong>命名空间：</strong></h3>
+<ul>
+<li>
+<p><strong>命名空间是类型的域，类型通常被组织到层次化的命名空间中，使它们更容易查找且避免了冲突</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>System.Security.Cryptography</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>命名空间是类型名称的组成部分</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>System.Security.Cryptography.RSA ras = System.Security.Cryptography.RSA.Create();</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>命名空间独立于 Assembly，对成员的可见性也没有影响</strong></p>
+</li>
+</ul>
+<h3 id="namespace"><strong>namespace：</strong></h3>
+<ul>
+<li><strong>namespace 关键字定义了块 {} 里面类型的命名空间</strong></li>
+<li><strong>命名空间中的点表示嵌套命名空间的层次结构</strong></li>
+<li><strong>未在任何命名空间里定义的类型被称为驻留在全局名称空间中</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Outer.Middle.Inner{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Class1</span>{}
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Class2</span>{}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Outer{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">namespace</span> Middle{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">namespace</span> Inner{
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Class3</span>{}
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Class4</span>{}
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="using-static"><strong>using static：</strong></h3>
+<ul>
+<li><strong>从 C# 6 开始，你不仅仅可以引入名称空间，还可以引入具体的类型，这就需要使用 using static</strong></li>
+<li><strong>被引入类型的所有静态成员可被直接使用，无需使用类名</strong></li>
+<li><strong>所有可访问的静态成员都会被引入，包括字段、属性、嵌套类型等</strong></li>
+<li><strong>也可以用于 enum，这样的话它的成员就被引入了</strong></li>
+<li><strong>如果多个 static 引入存在歧义的话，将发生错误</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> static System.Console;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test2</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args){
+</span></span><span style="display:flex;"><span>        WriteLine(<span style="color:#e6db74">&#34;Hello&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> static System.Windows.Visibility;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EnumTest</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> Test(){
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> textBox = <span style="color:#66d9ef">new</span> TextBox{Visibility = Hidden};<span style="color:#75715e">// XAML-style</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 就不需要再写 Visibility.Hidden</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="命名的范围"><strong>命名的范围：</strong></h4>
+<ul>
+<li><strong>在外层命名空间声明的名称可以在内部的命名空间里直接使用，无需全名</strong></li>
+<li><strong>如果想要引用命名空间层次结构下不同分支的类型，可以使用部分名称</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Outer{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Class1</span>{}
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">namespace</span> Inner{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Class2</span>:Class1{}
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> MyTradingCompany{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">namespace</span> Common{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ReportBase</span>{}
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">namespace</span> ManagementReporting{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SalesReport</span> : Common.ReportBase{}
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="名称隐藏"><strong>名称隐藏：</strong></h3>
+<ul>
+<li><strong>如果同一个类型名同时出现在外层和内层的命名空间里，那么，直接使用类型名的时候，使用的是内层的</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Outer{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Foo</span>{}
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">namespace</span> Inner{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Foo</span>{}
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span>{
+</span></span><span style="display:flex;"><span>            Foo f1;<span style="color:#75715e">// = Outer.Inner.Foo</span>
+</span></span><span style="display:flex;"><span>            Outer.Foo f2;<span style="color:#75715e">// = Outer.Foo </span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="重复的命名空间"><strong>重复的命名空间：</strong></h4>
+<ul>
+<li><strong>可以重复声明命名空间，只要它们下面没有冲突的类型名就可以了</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Outer.Middle.Inner{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Class1</span>{}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> Outer.Middle.Inner{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Class2</span>{}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>嵌套 using 指令：</strong></p>
+<ul>
+<li><strong>可以在一个命名空间内嵌套 using 指令</strong></li>
+<li><strong>可以让 using 的东西的作用范围限制在这个命名空间内</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> N1{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Class1</span>{}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> N2{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">using</span> N1;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Class2</span> : Class1{}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> N2{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Class3</span> : Class1 {}<span style="color:#75715e">// Compile-time error</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> PropertyInfo2 = System.Reflection.PropertyInfo;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program1</span> {
+</span></span><span style="display:flex;"><span>    PropertyInfo2 p;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> R = System.Reflection;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span> { R.PropertyInfo p;}
+</span></span></code></pre></div><h3 id="extern"><strong>Extern：</strong></h3>
+<ul>
+<li><strong>Extern 别名允许你的程序引用两个全名相同的类型名，通常这两个类型来自不同的 Assembly</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>Library <span style="color:#ae81ff">1</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// csc target:library /out:Widgets1.dll widgetsv1.cs</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">namespace</span> Widgets{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Widget</span>{}
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>Library <span style="color:#ae81ff">2</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// csc target:library /out:Widgets2.dll widgetsv2.cs</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">namespace</span> Widgets{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Widget</span>{}
+</span></span><span style="display:flex;"><span>    }    
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// csc /r:Widgets1.dll /r:Widgets2.dll application.cs</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Widgets
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(){
+</span></span><span style="display:flex;"><span>        Widget w = <span style="color:#66d9ef">new</span> Widget();<span style="color:#75715e">// error</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}    
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// csc /r:Widgets1.dll /r:Widgets2.dll application.cs</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">alias</span> W1;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">alias</span> W2;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(){
+</span></span><span style="display:flex;"><span>        W1.Widgets.Widget w1 = <span style="color:#66d9ef">new</span> W1.Widgets.Widget();
+</span></span><span style="display:flex;"><span>        W2.Widgets.Widget w2 = <span style="color:#66d9ef">new</span> W2.Widgets.Widget();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>} 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> N{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span>{}<span style="color:#75715e">// Nested type</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(){
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">new</span> A.B();<span style="color:#75715e">// Instantiate class N.A.B</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">global</span>::A.B();<span style="color:#75715e">// Instantiate class A.B</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> A{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span>{}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="namespace-alias-qualifiers-命名空间别名限定符"><strong>Namespace alias qualifiers 命名空间别名限定符</strong></h4>
+<ul>
+<li>
+<p><strong>内层命名空间的类型名会把外层命名空间下的类型名隐藏，有时即使使用全名也无法解决冲突</strong></p>
+</li>
+<li>
+<p><strong>解决办法：</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>使用 global 命名空间，global::</strong></li>
+<li><strong>extern alias</strong></li>
+</ul>
+</li>
+<li></li>
+</ul>
+<h3 id="class-类"><strong>class 类：</strong></h3>
+<ul>
+<li><strong>class 是引用类型中最常用的一种类型</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">YourClassName</span>{
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>
+<p><strong>字段：是 Class 或者 Struct 的成员，它是一个变量</strong></p>
+</li>
+<li>
+<p><strong>readonly 修饰符：防止字段在构造之后被改变</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>readonly 字段只能在声明的时候被赋值，或者在构造函数里被赋值</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>字段初始化：在构造函数之前运行，字段之间的初始化顺序按照声明的顺序进行初始化</strong></p>
+</li>
+<li>
+<p><strong>方法签名：方法名、参数类型、参数类型(包括按值传递的还是按引用传递的)的顺序有关，但是与返回值类型与参数名称无关</strong></p>
+</li>
+<li>
+<p><strong>EXPRESSION-BODIED 方法：使用 =&gt; 代表 {} 与 return（如果有返回值的话）</strong></p>
+</li>
+<li>
+<p><strong>方法的重载：方法名一致，方法签名不同</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>构造函数只能重载而不能重写</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>示例：</strong></p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Goo(<span style="color:#66d9ef">int</span>[] x){ ... }
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Goo(<span style="color:#66d9ef">params</span> <span style="color:#66d9ef">int</span>[] x){ ... }
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Compile-time error：因为方法的签名是不包括 params 关键字的</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 故去掉 params 关键字，上述两个方法的签名是一致的，故编译错误</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Foo(<span style="color:#66d9ef">int</span> x){ ... }
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Foo(<span style="color:#66d9ef">ref</span> <span style="color:#66d9ef">int</span> x){ ... }<span style="color:#75715e">// OK so far</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Foo(<span style="color:#66d9ef">out</span> <span style="color:#66d9ef">int</span> x){ ... }
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Compile-time error：1和2可以共存，1和3也可以共存，但是2和3不能共存</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 因为2和3的方法签名是一致的</span>
+</span></span></code></pre></div><ul>
+<li>
+<p><strong>本地方法：C# 7 之后：本地方法存在在某个方法内部、属性访问器、构造函数、本地方法中</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>不能使用 static 修饰符修饰</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>构造函数的名称与当前类的名称一致，并且不需要写返回值，因为构造函数的返回值就是当前类型</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>C# 7 之后可以允许将单语句的构造函数写为 EXPRESSION-BODIED 的形式</strong></li>
+</ul>
+</li>
+<li></li>
+</ul>
+<h3 id="构造函数的重载"><strong>构造函数的重载：</strong></h3>
+<ul>
+<li><strong>class 和 struct 可以重载构造函数</strong></li>
+<li><strong>调用构造函数时使用 this</strong></li>
+<li><strong>当同一个类型下的构造函数 A 调构造函数 B 的时候，B 会先执行</strong></li>
+<li><strong>可以把表达式传递给另一个构造函数，但表达式本身不能使用 this 引用，因为这个时候对象还没有被初始化</strong></li>
+<li><strong>所以对象上任何方法的调用都会失败，但是可以使用 static 方法</strong></li>
+<li><strong>实例：</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Wine</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">decimal</span> Price;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Year;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> DateTime Date;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> Wine(<span style="color:#66d9ef">decimal</span> price){ Price = price; }
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> Wine(<span style="color:#66d9ef">decimal</span> price,<span style="color:#66d9ef">int</span> year) : <span style="color:#66d9ef">this</span>(price){ Year = year;}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// public Wine(decimal price,DateTime date) : </span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// this(price,this.GetYear()){ Date = date;}</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 错误不可以调用实例方法，因为对象还没有被初始化</span>
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> Wine(<span style="color:#66d9ef">decimal</span> price,DateTime date) :
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">this</span>(price,Wine.GetYear()){ Date = date;}
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 正确</span>
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> GetYear(){ <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1950</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="注意-1"><strong>注意：</strong></h3>
+<ul>
+<li>
+<p><strong>当值有可能改变，并且需要暴露给其他 Assembly 的时候，静态只读字段时相对比较好的选择</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>public const decimal ProgramVersion = 2.3;</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>如果 Y Assembly 引用了 X Assembly 并且使用了这个常量，那么在编译的时候，2.3这个值就会被固化于 Y Assembly 中。这意味着，如果后来 X Assmebly 重新编译，这个常量变成了 2.4，如果 Y Assembly 不重新编译的话，Y 将仍然使用2.3这个值，直到 Y 被重新编译，它的值才会变成2.4。静态只读字段就会避免这个问题的发生。</strong></p>
+</li>
+</ul>
+<h4 id="初始化顺序"><strong>初始化顺序：</strong></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(){ Console.WirteLine(Foo.X); } <span style="color:#75715e">// 3</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 在这里访问 Foo 中的静态字段 X 时，它已经完成了初始化，故打印值为3</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Foo</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> Foo Instance = <span style="color:#66d9ef">new</span> Foo();
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> X = <span style="color:#ae81ff">3</span>;
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	Foo(){ Console.WriteLine(X); }<span style="color:#75715e">// 0</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 而在这里访问 Foo 中的静态字段 X 时，</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 因为多个静态字段之间的初始化顺序是按照声明的顺序进行的</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 因此在初始化 Foo 类型的 Instance 静态字段时调用了这个无参的构造函数 </span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 而此时 X 并没有进行初始化</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 故其默认值是 0 ，所以会打印 0 </span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="静态类"><strong>静态类：</strong></h3>
+<ul>
+<li>
+<p><strong>类也可以是静态的</strong></p>
+</li>
+<li>
+<p><strong>其成员必须全是静态的</strong></p>
+</li>
+<li>
+<p><strong>不可以有子类</strong></p>
+</li>
+<li>
+<p><strong>例如：</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>System.Console</strong></li>
+<li><strong>System.Math</strong></li>
+</ul>
+</li>
+</ul>
+<h3 id="多态"><strong>多态：</strong></h3>
+<ul>
+<li><strong>引用是多态的，类型为 x 的变量可以引用其子类的对象</strong></li>
+<li><strong>实例：</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Display(Asset asset){
+</span></span><span style="display:flex;"><span>    System.Console.WriteLine(asset.Name);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Stock msft = <span style="color:#66d9ef">new</span> Stock ...;
+</span></span><span style="display:flex;"><span>House mansion = <span style="color:#66d9ef">new</span> House ...;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 注意这里的 Stock 和 House 均继承至 Asset</span>
+</span></span><span style="display:flex;"><span>Display(msft)
+</span></span><span style="display:flex;"><span>Display(mansion)
+</span></span></code></pre></div><ul>
+<li><strong>由于子类具有父类的全部功能特性，所以参数可以是子类（类型的参数/实例）</strong></li>
+<li><strong>但是反过来就不行了：因为有可能子类有一些属性，而父类没有</strong></li>
+</ul>
+<h3 id="向上转换由子类转换为父类隐式转换"><strong>向上转换：由子类转换为父类：隐式转换</strong></h3>
+<ul>
+<li><strong>从子类的引用对象中创建父类的引用对象</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>Stock msft = <span style="color:#66d9ef">new</span> Stock();
+</span></span><span style="display:flex;"><span>Asset a = msft; <span style="color:#75715e">// Upcast 向上转换</span>
+</span></span></code></pre></div><ul>
+<li><strong>变量 a 依然指向同一个 Stock 对象（同时 msft 也指向它）</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>Console.WirteLine(a == msft);<span style="color:#75715e">// True：他们两均指向了 new Stock() 这个对象</span>
+</span></span></code></pre></div><ul>
+<li><strong>尽管变量 a 和 msft 都指向同一个对象，但是 a 的可视范围更小一些</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>Console.WriteLine(a.Name);<span style="color:#75715e">// OK</span>
+</span></span><span style="display:flex;"><span>Console.WriteLine(a.SharesOwned);<span style="color:#75715e">// Error:SharesOwned undefined</span>
+</span></span></code></pre></div><h3 id="向下转换从父类的引用创建出子类的引用显示转换"><strong>向下转换：从父类的引用创建出子类的引用：显示转换</strong></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>Stock msft = <span style="color:#66d9ef">new</span> Stock();
+</span></span><span style="display:flex;"><span>Asset a = msft;          <span style="color:#75715e">// Upcast</span>
+</span></span><span style="display:flex;"><span>Stock s = (Stock)a;      <span style="color:#75715e">// Downcast</span>
+</span></span><span style="display:flex;"><span>Console.WriteLine(s.SharesOwned); <span style="color:#75715e">// &lt;No error&gt;</span>
+</span></span><span style="display:flex;"><span>Console.WriteLine(s == a)         <span style="color:#75715e">// True</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 本质上 msft、a、s 这三个引用变量都指向了用一个 Stock 对象</span>
+</span></span><span style="display:flex;"><span>Console.WriteLine(s == msft)      <span style="color:#75715e">// True</span>
+</span></span></code></pre></div><ul>
+<li><strong>和向上转换一样，只涉及到引用变量，底层的对象不会受影响</strong></li>
+<li><strong>需要显示转换，因为可能会失败</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>House h = <span style="color:#66d9ef">new</span> House();
+</span></span><span style="display:flex;"><span>Asset a = h;<span style="color:#75715e">// Upcast always succeeds</span>
+</span></span><span style="display:flex;"><span>Stock s = (Stock)a;<span style="color:#75715e">// Downcast fails:a is not a Stock</span>
+</span></span></code></pre></div><ul>
+<li><strong>如果向下转换失败，那么会抛出 InvalidCastException（属于运行时类型检查异常）</strong></li>
+</ul>
+<h3 id="as-操作符"><strong>AS 操作符</strong></h3>
+<ul>
+<li><strong>as 操作符会执行向下转换，如果转换失败，不会抛出异常，值会变为 null</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>Asset a = <span style="color:#66d9ef">new</span> Asset();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 将父类的对象转换为子类：这是不行的，故 s 的值是 null</span>
+</span></span><span style="display:flex;"><span>Stock s = a <span style="color:#66d9ef">as</span> Stock;<span style="color:#75715e">// s is null;no exception thron</span>
+</span></span></code></pre></div><h3 id="is-操作符"><strong>IS 操作符：</strong></h3>
+<ul>
+<li><strong>is 操作符会检验引用的转换是否成功，换句话说，判断对象是否派生于某个类（或者说实现了某个接口）</strong></li>
+<li><strong>通常用于向下转换前的验证：</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">if</span>( a <span style="color:#66d9ef">is</span> Stock){
+</span></span><span style="display:flex;"><span>    Console.WriteLine((Stock)a.SharesOwned);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>
+<p><strong>模式变量：</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>C# 7中，在使用 is 操作符的时候，可以引入一个变量</strong></li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">if</span>( a <span style="color:#66d9ef">is</span> Stock s){
+</span></span><span style="display:flex;"><span>    Console.WriteLine(s.SharesOwned);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 相当于以下代码：</span>
+</span></span><span style="display:flex;"><span>Stock s;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span>( a <span style="color:#66d9ef">is</span> Stock){
+</span></span><span style="display:flex;"><span>    s = (Stock)a;
+</span></span><span style="display:flex;"><span>    Console.WriteLine(s.SharesOwned);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>引入的变量可以立即“消费”</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">if</span>(a <span style="color:#66d9ef">is</span> Stock s &amp;&amp; s.SharesOwned &gt; <span style="color:#ae81ff">100_000</span>){
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;Wealthy&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="virtual-函数成员">VIRTUAL 函数成员：</h3>
+<ul>
+<li><strong>标记为 virtual 的函数可以被子类重写，包括方法、属性、索引器、事件</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Asset</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">decimal</span> Liability =&gt; <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="override-重写">Override 重写</h3>
+<ul>
+<li><strong>使用 override 修饰符，子类可以重写父类的函数</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Stock</span>:Asset{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">long</span> SharesOwned; 
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">House</span> : Asset{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">decimal</span> Mortgage;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">decimal</span> Liability =&gt; Mortgage;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>House mansion = <span style="color:#66d9ef">new</span> House{Name=<span style="color:#e6db74">&#34;McMansion&#34;</span>,Mortgage=<span style="color:#ae81ff">25_0000</span>};
+</span></span><span style="display:flex;"><span>Asset a = mansion;
+</span></span><span style="display:flex;"><span>Console.WriteLine(mansion.Liability);	<span style="color:#75715e">// 250000</span>
+</span></span><span style="display:flex;"><span>Console.WriteLine(a.Liability);				   <span style="color:#75715e">// 250000</span>
+</span></span></code></pre></div><ul>
+<li><strong>virtual 方法和重写方法的签名、返回值类型、可访问程度必须是一样的</strong></li>
+<li><strong>重写方法里使用 base 关键字可以调用父类的实现</strong></li>
+</ul>
+<h4 id="注意-2">注意：</h4>
+<ul>
+<li><strong>在构造函数里调用 virtual 方法可能比较危险，因为编写子类的开发人员可能不知道他们在重写方法的时候，面对的是一个未完全初始化的对象</strong></li>
+<li><strong>换句话说，重写的方法可能会访问依赖于还未被构造函数初始化的字段的属性或者方法</strong></li>
+</ul>
+<h3 id="抽象类和抽象成员">抽象类和抽象成员：</h3>
+<ul>
+<li><strong>使用 ==abstract== 声明的类是抽象类</strong></li>
+<li><strong>抽象类不可以被实例化，只有其具体的子类才可以实例化</strong></li>
+<li><strong>抽象类可以定义抽象成员</strong></li>
+<li><strong>抽象成员和 virtual 成员很想，但是不提供具体的实现，子类必须提供实现，除非子类也是抽象的</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Asset</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Note empty implementation</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">decimal</span> NetValue { <span style="color:#66d9ef">get</span>;}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Stock</span> : Asset{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">long</span> SharesOwned;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">decimal</span> CurrentPrice;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Override like a virtual method</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">decimal</span> NetValue =&gt; CurrentPrice * SharesOwned;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="隐藏被继承的成员">隐藏被继承的成员</h3>
+<ul>
+<li><strong>父类和子类可以定义相同的成员：</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span>		{<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Counter = <span style="color:#ae81ff">1</span>;}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span> : A   {<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Counter = <span style="color:#ae81ff">2</span>;}
+</span></span></code></pre></div><ul>
+<li><strong>class B 中的 Counter 字段就隐藏了 A 里面的 Counter 字段（通常是偶然发生的）。例如子类添加某个字段之后，父类也添加了相同的一个字段</strong></li>
+<li><strong>在编译时编译器会发出警告</strong></li>
+</ul>
+<p><img src="https://gitee.com/zlim/pic-go-figure-server/raw/master/20210821205914.png" alt="img"></p>
+<ul>
+<li><strong>按照如下规则进行解析：</strong>
+<ul>
+<li>==编译时对 A 的引用会绑定到 A.Counter==</li>
+<li>==编译时对 B 的引用会绑定到 B.Counter==</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Counter = <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span> : A{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Counter = <span style="color:#ae81ff">2</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(){
+</span></span><span style="display:flex;"><span>        A a = <span style="color:#66d9ef">new</span> A();
+</span></span><span style="display:flex;"><span>        System.Console.WriteLine(a.Counter);<span style="color:#75715e">// 1</span>
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        B b = <span style="color:#66d9ef">new</span> B();
+</span></span><span style="display:flex;"><span>        System.Console.WriteLine(b.Counter);<span style="color:#75715e">// 2</span>
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        A x = <span style="color:#66d9ef">new</span> B();<span style="color:#75715e">// A 是 B 的父类，这是向上转换</span>
+</span></span><span style="display:flex;"><span>        System.Console.WriteLine(x.Counter);<span style="color:#75715e">// 1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 这里虽然 new 了一个 B 类型的对象</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 但是 x 实际上是对 A 的引用</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 也即引用变量的类型是什么，它就会调用那个类型的字段</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 故输出为 1 </span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="new-vs-override">NEW vs OVERRIDE：</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BaseClass</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> Foo(){ Console.WriteLine(<span style="color:#e6db74">&#34;BaseClass.Foo&#34;</span>)}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Override</span> : BaseClass{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Foo(){ Console.WriteLine(<span style="color:#e6db74">&#34;Override.Foo&#34;</span>)}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Hider</span> : BaseClass{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">void</span> Foo(){ Console.WriteLine(<span style="color:#e6db74">&#34;Hider.Foo&#34;</span>)}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(){
+</span></span><span style="display:flex;"><span>    Override over = <span style="color:#66d9ef">new</span> Override();
+</span></span><span style="display:flex;"><span>    BaseClass b1 = over;
+</span></span><span style="display:flex;"><span>    over.Foo();			<span style="color:#75715e">// Override.Foo</span>
+</span></span><span style="display:flex;"><span>    b1.Foo();			<span style="color:#75715e">// Override.Foo</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    Hider h = <span style="color:#66d9ef">new</span> Hider();
+</span></span><span style="display:flex;"><span>    BaseClass b2 = h;
+</span></span><span style="display:flex;"><span>    h.Foo();			<span style="color:#75715e">// Hider.Foo</span>
+</span></span><span style="display:flex;"><span>    b2.Foo();			<span style="color:#75715e">// BaseClass.Foo</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="sealed">SEALED：</h3>
+<ul>
+<li><strong>针对重写的成员，可以使用 sealed 关键字把它“密封”起来，防止它被其子类重写</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">sealed</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">decimal</span> Liability { <span style="color:#66d9ef">get</span> { <span style="color:#66d9ef">return</span> Mortgage;} }
+</span></span></code></pre></div><ul>
+<li><strong>也可以 sealed 类本身，就隐式的 sealed 所有的 virtual 函数了</strong></li>
+</ul>
+<h3 id="base-关键字">BASE 关键字：</h3>
+<ul>
+<li>
+<p><strong>base 和 this 略像，base 主要用于：</strong></p>
+<ul>
+<li>==从子类访问父类里被重写的函数==</li>
+<li>==调用父类的构造函数：==</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">House</span> : Asset{
+</span></span><span style="display:flex;"><span>	...
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">decimal</span> Liability =&gt; <span style="color:#66d9ef">base</span>.Liability + Mortgage;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+<li>
+<p><strong>这种写法可保证，访问的一定是 Asset 中的 Liability 属性，无论该属性是被重写还是被隐藏了</strong></p>
+</li>
+</ul>
+<h3 id="构造函数和继承">构造函数和继承</h3>
+<ul>
+<li><strong>子类必须声明自己的构造函数</strong></li>
+<li><strong>从子类可访问父类的构造函数，但不是自动继承的</strong></li>
+<li><strong>子类必须重新定义它想要暴露的构造函数</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BaseClass</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> X;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> BaseClass(){}
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> BaseClass(<span style="color:#66d9ef">int</span> x){ <span style="color:#66d9ef">this</span>.X = x;}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SubClass</span> : BaseClass{
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(){
+</span></span><span style="display:flex;"><span>        SubClass s = <span style="color:#66d9ef">new</span> SubClass(<span style="color:#ae81ff">123</span>);<span style="color:#75715e">// Error</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>调用父类的构造函数需要使用 base 关键字</strong></li>
+<li><strong>父类的构造函数肯定会先执行</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BaseClass</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> X;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> BaseClass(){}
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> BaseClass(<span style="color:#66d9ef">int</span> x){ <span style="color:#66d9ef">this</span>.X = x;}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SubClass</span> : BaseClass{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> SubClass(<span style="color:#66d9ef">int</span> x) : <span style="color:#66d9ef">base</span>(x){}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(){
+</span></span><span style="display:flex;"><span>        SubClass s = <span style="color:#66d9ef">new</span> SubClass(<span style="color:#ae81ff">123</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="隐式调用无参的父类构造函数">隐式调用无参的父类构造函数：</h3>
+<ul>
+<li><strong>如果子类的构造函数里没有使用 base 关键字，那么父类的无参构造函数会被隐式的调用</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BaseClass</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> X;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> BaseClass(){ X = <span style="color:#ae81ff">1</span>;}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SubClass</span> : BaseClass{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> SubClass() : { Console.WriteLine(X); }<span style="color:#75715e">// 1</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>如果父类没有无参构造函数，那么子类就必须在构造函数里使用 base 关键字去调用父类中其他的构造函数</strong></li>
+</ul>
+<h3 id="构造函数和字段初始化顺序">构造函数和字段初始化顺序：</h3>
+<ul>
+<li>
+<p><strong>对象被实例化时，初始化动作按照如下顺序进行：</strong></p>
+<ul>
+<li>==从子类到父类：==
+<ul>
+<li>==字段被初始化==</li>
+<li>==父类构造函数的参数值被算出==</li>
+</ul>
+</li>
+<li>==从父类到子类：==
+<ul>
+<li>==构造函数体被执行==</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> x = <span style="color:#ae81ff">1</span>;							<span style="color:#75715e">// Executes 3st</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> B (<span style="color:#66d9ef">int</span> x){
+</span></span><span style="display:flex;"><span>        ...								<span style="color:#75715e">// Executes 4st</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">D</span> : B{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> y = <span style="color:#ae81ff">1</span>;							<span style="color:#75715e">// Executes 1st</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> D (<span style="color:#66d9ef">int</span> x ) 
+</span></span><span style="display:flex;"><span>        : <span style="color:#66d9ef">base</span>(x + <span style="color:#ae81ff">1</span>){					<span style="color:#75715e">// Executes 2st:仅包括 base(x + 1) 语句</span>
+</span></span><span style="display:flex;"><span>        ...								<span style="color:#75715e">// Executes 5st</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="重载和解析">重载和解析：</h3>
+<ul>
+<li><strong>看例子：</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Foo(Asset a){}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Foo(House h){}
+</span></span></code></pre></div><ul>
+<li><strong>重载方法被调用时，更具体的类型拥有更高的优先级：</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>House h = <span style="color:#66d9ef">new</span> House(...);
+</span></span><span style="display:flex;"><span>Foo(h);					<span style="color:#75715e">// Calls Foo(House)</span>
+</span></span></code></pre></div><ul>
+<li><strong>调用哪个重载方法是在编译时就确定下来的：</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>Asset a = <span style="color:#66d9ef">new</span> Houser(...);
+</span></span><span style="display:flex;"><span>Foo(a);					<span style="color:#75715e">// Calls Foo(Asset)</span>
+</span></span></code></pre></div><ul>
+<li><strong>例子：</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Stack</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> position;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">object</span>[] data = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">object</span>[<span style="color:#ae81ff">10</span>];
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Push(<span style="color:#66d9ef">object</span> obj) { data[position++] = obj;  }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">object</span> Pop()			 { <span style="color:#66d9ef">return</span> data[position--]; }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(){
+</span></span><span style="display:flex;"><span>    Stact stac = <span style="color:#66d9ef">new</span> Stack();
+</span></span><span style="display:flex;"><span>    stack.Push(<span style="color:#e6db74">&#34;sausage&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> s = (<span style="color:#66d9ef">string</span>)stack.Pop();	<span style="color:#75715e">// Downcast,so explicit cast is needed</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    Console.WriteLine(s);			<span style="color:#75715e">// sausage</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="object">OBJECT</h3>
+<ul>
+<li><strong>object 是引用类型</strong></li>
+<li><strong>但是值类型可以转化为 object，反之亦然。（类型统一）</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>stack.Push(<span style="color:#ae81ff">3</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> three = (<span style="color:#66d9ef">int</span>)stack.Pop();
+</span></span></code></pre></div><ul>
+<li><strong>在值类型和 object 之间转化的时候，CLR（common language runtime）必须执行一些特殊的工作，以弥合值类型和引用类型之间语义上的差异，这个过程就叫做==装箱==和==拆箱==</strong></li>
+</ul>
+<h4 id="装箱">装箱：</h4>
+<ul>
+<li><strong>装箱就是把值类型的实例转换为引用类型实例的动作</strong></li>
+<li><strong>目标引用类型可以是 object，也可以是某个接口</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> x = <span style="color:#ae81ff">9</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">object</span> obj = x;		<span style="color:#75715e">// Box the int</span>
+</span></span></code></pre></div><h4 id="拆箱">拆箱：</h4>
+<ul>
+<li><strong>拆箱正好相反，把那个对象转化为原来的值类型</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> y = (<span style="color:#66d9ef">int</span>)obj;		<span style="color:#75715e">// Unbox the int</span>
+</span></span></code></pre></div><ul>
+<li>
+<p><strong>拆箱需要显式的转换</strong></p>
+</li>
+<li>
+<p><strong>运行时会检测这个值类型的 object 对象的真实类型是否匹配</strong></p>
+<ul>
+<li>==如果不匹配就会抛出 InvalidCastException==</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">object</span> obj = <span style="color:#ae81ff">9</span>;			<span style="color:#75715e">// 9 is inferred to be of type int	</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">long</span> x = (<span style="color:#66d9ef">long</span>)obj;		<span style="color:#75715e">// InvalidCastException</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">object</span> obj = <span style="color:#ae81ff">9</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">long</span> x = (<span style="color:#66d9ef">int</span>)obj;		<span style="color:#75715e">// Corret: 9 是 int 类型，而 int 类型可以隐式的转换为 long 类型</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">object</span> obj = <span style="color:#ae81ff">3.5</span>;			<span style="color:#75715e">// 3.5 is inferred to be of type double	</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> x = (<span style="color:#66d9ef">int</span>)(<span style="color:#66d9ef">double</span>)obj;	<span style="color:#75715e">// x is now 3 </span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 相当于：int x = (int)((double)obj);</span>
+</span></span></code></pre></div></li>
+<li>
+<p><strong>装箱对于了类型统一是非常重要的，但是系统不够完美</strong></p>
+</li>
+<li>
+<p><strong>数组和泛型只支持引用转换，不支持装箱</strong></p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">object</span>[] a1 = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">string</span>[<span style="color:#ae81ff">3</span>];		<span style="color:#75715e">// Legal</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">object</span>[] a2 = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span>[<span style="color:#ae81ff">3</span>];			<span style="color:#75715e">// Error</span>
+</span></span></code></pre></div><h3 id="装箱拆箱的复制">装箱拆箱的复制：</h3>
+<ul>
+<li><strong>装箱会把值类型的实例复制到一个新的对象</strong></li>
+<li><strong>拆箱会把这个对象的内容再复制给一个值类型的实例</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> i = <span style="color:#ae81ff">3</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">object</span> boxed = i;
+</span></span><span style="display:flex;"><span>i = <span style="color:#ae81ff">5</span>;
+</span></span><span style="display:flex;"><span>Console.WriteLine(boxed);	<span style="color:#75715e">// 3</span>
+</span></span></code></pre></div><h3 id="静态和运行时类型检查">静态和运行时类型检查：</h3>
+<ul>
+<li><strong>C# 的程序既会做静态的类型检查（编译时），也会做运行时的类型检查（CLR）</strong></li>
+<li><strong>静态检查：不运行程序的情况下，让编译器保证你程序的正确性</strong></li>
+<li><strong>运行时的类型检查由 CLR 执行，发生在向下的引用转换或者拆箱的时候</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">object</span> y = <span style="color:#e6db74">&#34;5&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> z = (<span style="color:#66d9ef">int</span>)y;		<span style="color:#75715e">// Runtime error,downcast failed</span>
+</span></span></code></pre></div><ul>
+<li><strong>运行时检查之所以可行是因为：每个在 heap 上的对象内部都存储了一个类型 token。这个 token 可以通过调用 obejct 的 GetType() 方法来获取</strong></li>
+</ul>
+<h3 id="gettype-方法和typeog-操作符">GETTYPE 方法和TYPEOG 操作符：</h3>
+<ul>
+<li><strong>所有 C# 的类型在运行时都是以 System.Type 的实例来展现的</strong></li>
+<li><strong>两种方式可以获得 System.Type 对象：</strong>
+<ul>
+<li>==在实例上调用 GetType() 方法==</li>
+<li>==在类型名上使用 typeof操作符==</li>
+</ul>
+</li>
+<li><strong>GetType 是在运行时被算出的</strong></li>
+<li><strong>typeof 是在编译时被算出（静态）（当涉及到泛型参数时，它是由JIT(Just-In time)编译器来解析的）</strong></li>
+</ul>
+<h3 id="systemtype">System.Type</h3>
+<ul>
+<li><strong>System.Type 的属性有：类型的名称、Assembly 、基类等等</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Point</span>{ <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> X,Y;}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(){
+</span></span><span style="display:flex;"><span>        Point p = <span style="color:#66d9ef">new</span> Point();
+</span></span><span style="display:flex;"><span>        Console.WriteLine(p.GetType().Name);				<span style="color:#75715e">// Point</span>
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#66d9ef">typeof</span>(Point).Name);				<span style="color:#75715e">// Point</span>
+</span></span><span style="display:flex;"><span>        Console.WriteLine(p.GetType() == <span style="color:#66d9ef">typeof</span>(Point));	<span style="color:#75715e">// True</span>
+</span></span><span style="display:flex;"><span>        Console.WriteLine(p.X.GetType().Name);				<span style="color:#75715e">// Int32</span>
+</span></span><span style="display:flex;"><span>        Console.WriteLine(p.Y.GetType().FullName);			<span style="color:#75715e">// System.Int32</span>
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="tostring-方法">ToString 方法：</h4>
+<ul>
+<li><strong>ToString() 方法会返回一个类型实例的默认文本表示</strong></li>
+<li><strong>所有的内置类型都重写了该方法</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> x = <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">string</span> s = x.ToString();		<span style="color:#75715e">// 1</span>
+</span></span></code></pre></div><ul>
+<li><strong>可以在自定义的类型上重写 ToString() 方法</strong></li>
+<li><strong>如果你不重写该方法，那么就会返回该类型的名称</strong></li>
+<li><strong>当你调用一个被重写的 object 成员的时候，例如在值类型上直接调用 ToString() 方法，这时候是不会发生装箱操作的</strong></li>
+<li><strong>但是如果你进行了转换，那么装箱操作就会发生：</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> x = <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">string</span> s1 = s.ToString();			<span style="color:#75715e">// Calling on nonboxed value</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">object</span> obj = x;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">string</span> s2 = box.ToString();			<span style="color:#75715e">// Calling on boxed value</span>
+</span></span></code></pre></div><h3 id="object-的成员列表">OBJECT 的成员列表：</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Obejct</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">object</span>();
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">extern</span> Type GetType();
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">virtual</span> boool Equals (<span style="color:#66d9ef">object</span> obj);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">bool</span> Equals 	(<span style="color:#66d9ef">object</span> objA, <span style="color:#66d9ef">object</span> objB);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">bool</span> ReferenceEquals	(<span style="color:#66d9ef">object</span> objA,<span style="color:#66d9ef">object</span> objB);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">int</span> GetHashCode();
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">string</span> ToString();
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> Finalize();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">object</span> MemberwiseClone();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="struct-">STRUCT :</h3>
+<ul>
+<li><strong>struct 和 class 差不多，但是有一些不同：</strong>
+<ul>
+<li><strong>struct 是值类型，class 是引用类型</strong></li>
+<li><strong>struct 不支持继承（除了隐式的继承了 object，具体来说就是 System.ValueType）</strong></li>
+</ul>
+</li>
+</ul>
+<h4 id="struct-的成员">STRUCT 的成员：</h4>
+<ul>
+<li>
+<ul>
+<li>==无参构造函数==</li>
+<li>==字段初始化器==</li>
+<li>==终结器==</li>
+<li>==virtual 或 protected 成员==</li>
+</ul>
+</li>
+</ul>
+<h4 id="struct-的构建"><strong>STRUCT 的构建：</strong></h4>
+<ul>
+<li><strong>struct 实际上有一个无参的构造函数，但是你不能对其进行重写，它会对字段进行按位归零操作</strong></li>
+<li><strong>当你定义 struct 的构造函数时，必须显式的为每个字段赋值</strong></li>
+<li><strong>不可以有字段初始化器</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Point</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> x,y;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Point(<span style="color:#66d9ef">int</span> x,<span style="color:#66d9ef">int</span> y ){<span style="color:#66d9ef">this</span>.x = x;<span style="color:#66d9ef">this</span>.y = y;}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// struct 会默认有一个隐式的无参构造器：你可以使用，但不能重写</span>
+</span></span><span style="display:flex;"><span>Point p1 = <span style="color:#66d9ef">new</span> Point();<span style="color:#75715e">// p1.x and p1.y will be 0</span>
+</span></span><span style="display:flex;"><span>Point p2 = <span style="color:#66d9ef">new</span> Point(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>);<span style="color:#75715e">// p2.x and p2.y will be 1</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 这里则调用了我们自己编写的构造函数</span>
+</span></span></code></pre></div><ul>
+<li>
+<h4 id="有三个错误的例子"><strong>有三个错误的例子</strong></h4>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Point</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> x = <span style="color:#ae81ff">1</span>;<span style="color:#75715e">// Illegal:field initializer</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> y;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Point();<span style="color:#75715e">// Illegal:parameterless constructor</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Point(<span style="color:#66d9ef">int</span> x){<span style="color:#66d9ef">this</span>.x = x;}<span style="color:#75715e">// Illegal:must assign field y</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 这个与构造函数的个数无关，只要不是0个就行</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 但是必须为所有字段进行初始化</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="5个访问修饰符"><strong>5个访问修饰符：</strong></h3>
+<ul>
+<li>
+<p><strong>public，完全可以访问。enum 和 interface 的成员默认都是这个级别的</strong></p>
+</li>
+<li>
+<p><strong>internal，当前 assembly 或朋友 assembly 可以访问，非嵌套类型的默认访问级别</strong></p>
+</li>
+<li>
+<p><strong>private，本类可以访问。class 和 struct 的成员的默认访问级别</strong></p>
+</li>
+<li>
+<p><strong>protected，本类或者其子类可以访问</strong></p>
+</li>
+<li>
+<p><strong>protected internal，联合了 protected 和 internal 的访问级别</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>本类或者其子类可以访问</strong></li>
+<li><strong>当前 assembly 或朋友 assembly 可以访问，非嵌套类型的默认访问级别</strong></li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Class1</span>{}<span style="color:#75715e">// Class1 is internal (default)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Class2</span>{}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ClassA</span>{<span style="color:#66d9ef">int</span> x;}<span style="color:#75715e">// x is private(default)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ClassB</span>{<span style="color:#66d9ef">internal</span> <span style="color:#66d9ef">int</span> x;}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BaseClass</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> Foo(){}<span style="color:#75715e">// Foo is private(default)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> Bar(){}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SubClass</span> : BaseClass{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> Test1(){Foo();} <span style="color:#75715e">// Error - cannot access Foo</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> Test2(){Bar();} <span style="color:#75715e">// OK</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="朋友-assembly-"><strong>朋友 ASSEMBLY ：</strong></h3>
+<ul>
+<li><strong>通过添加 System.Runtime.CompilerServices.InternalsVisibleTo 这个 Assembly 的属性，并指定朋友 Assembly 的名字，就可以把 internal 的成员暴露给朋友 Assembly</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#a6e22e">[assembly:InternalsVisibleTo(&#34;Friend&#34;)]</span>
+</span></span></code></pre></div><ul>
+<li><strong>如果朋友 Assembly 有 Strong name，那么就必须指定其完整的160字节的 public key</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#a6e22e">[assembly:InternalsVisibleTo(&#34;StrongFriend,PublicKey=0024f000048c...&#34;)]</span>
+</span></span></code></pre></div><ul>
+<li><strong>朋友 Assembly 在单元测试时经常使用</strong></li>
+</ul>
+<h3 id="访问修饰符的限制"><strong>访问修饰符的限制：</strong></h3>
+<ul>
+<li><strong>当重写父类的函数时，重写后的函数和被重写的函数的访问级别必须一致</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BaseClass</span>		{<span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> Foo(){} }
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SubClass1</span> : BaseClass	{<span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Foo(){} } <span style="color:#75715e">// OK</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SubClass2</span> : BaseClass	{<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Foo(){} }	<span style="color:#75715e">// Error</span>
+</span></span></code></pre></div><ul>
+<li><strong>有一个例外：当在其他 Assembly 重写 protected internal 的方法时，重写后的方法必须是 protected</strong></li>
+</ul>
+<h3 id="什么是接口"><strong>什么是接口：</strong></h3>
+<ul>
+<li><strong>接口与 class 类似，但是它只为其成员提供了规格，而没有提供具体的实现</strong></li>
+<li><strong>接口的成员都是隐式公开抽象（public abstract）的</strong></li>
+<li><strong>一个 class 或者 struct 可以实现多个接口</strong></li>
+</ul>
+<h4 id="接口的实现"><strong>接口的实现：</strong></h4>
+<ul>
+<li><strong>接口的成员都是隐式 public 的，不可以声明访问修饰符</strong></li>
+<li><strong>实现接口表示对它的所有成员进行 public 的实现：</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IEnumerator</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> MoveNext();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">object</span> Current{<span style="color:#66d9ef">get</span>;}
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> Reset();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">internal</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Countdown</span> : IEnumerator{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> count = <span style="color:#ae81ff">11</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> MoveNext() =&gt; count-- &gt; <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">object</span> Current =&gt; count;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Reset(){ 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotSupportedException(); 
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="对象与接口的转换"><strong>对象与接口的转换：</strong></h3>
+<ul>
+<li><strong>可以隐式的把一个对象转化成它实现的接口：</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>IEnumerator e = <span style="color:#66d9ef">new</span> Countdown();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span>(e.MoveNext()){
+</span></span><span style="display:flex;"><span>	Console.WriteLine(e.Current);	<span style="color:#75715e">// 109876543210</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>虽然 Countdown 是一个 internal 的 class ，但是可以通过把它的实例隐式转化为 IEnumerator 接口来公共的访问它的成员</strong></li>
+</ul>
+<h3 id="接口的扩展"><strong>接口的扩展：</strong></h3>
+<ul>
+<li><strong>接口可以继承其他接口</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IUndoable</span> { <span style="color:#66d9ef">void</span> Undo(); }
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IRedoable</span> : IUndoable { <span style="color:#66d9ef">void</span> Redo(); }
+</span></span></code></pre></div><ul>
+<li><strong>IRedoable 接口继承了 IUndoable 的所有成员</strong></li>
+</ul>
+<h3 id="显示接口实现"><strong>显示接口实现：</strong></h3>
+<ul>
+<li><strong>实现多个接口的时候可能会造成成员的签名的冲突。通过显式实现接口成员可以解决这个问题：</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">I1</span> { <span style="color:#66d9ef">void</span> Foo(); }
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">I2</span> { <span style="color:#66d9ef">int</span> Foo(); }
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 放回类型不算方法签名</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 如果这两个方法的方法签名与返回值一致，那么在实现类中只需实现一次即可</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Widget</span> : I1,I2{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Foo(){
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;Widget&#39;s implementation of I1.Foo&#34;</span>);
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 显式的接口实现</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> I2.Foo(){
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;Widget&#39;s implementation of I2.Foo&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">42</span>;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>本例中，想要调用相应实现的接口方法，只能把其实例转换为相应的接口才行：</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>Widget w = <span style="color:#66d9ef">new</span> Widget();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 这里访问的是 I1 的 Foo： 是因为 I1 的 Foo 是 public 的</span>
+</span></span><span style="display:flex;"><span>w.Foo();	<span style="color:#75715e">// Widget&#39;s implementation of I1.Foo</span>
+</span></span><span style="display:flex;"><span>((I1)w).Foo();	<span style="color:#75715e">// Widget&#39;s implementation of I1.Foo</span>
+</span></span><span style="display:flex;"><span>((I2)w).Foo(); <span style="color:#75715e">// Widget&#39;s implementation of I2.Foo</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 不能直接访问 I2 的 Foo 的实现方法，因为它默认是 private 的，只能转换为对应</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 接口的变量才行</span>
+</span></span></code></pre></div><ul>
+<li><strong>另一个显式实现接口成员的理由是故意隐藏那些对于类型来说不常用的成员</strong></li>
+</ul>
+<h3 id="virtual-的实现接口成员"><strong>VIRTUAL 的实现接口成员：</strong></h3>
+<ul>
+<li><strong>隐式实现的接口成员默认是 sealed 的</strong></li>
+<li><strong>如果想要进行重写，必须在基类中把成员标记为 virtual 或者 abstract</strong></li>
+<li><strong>无论是转换为基类还是转换为接口来调用接口的成员，调用的都是子类的实现</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IDo</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> Do();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 当父类中的 Do 没有使用 virtual 修饰，子类中的 Do 没有使用 override 修饰时</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// public class Parent : IDo{</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//     public void Do() =&gt; System.Console.WriteLine(&#34;Parent&#34;);</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// }</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// public class Child : Parent{</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//     public void Do() =&gt; System.Console.WriteLine(&#34;Child&#34;);</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// }</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Parent</span> : IDo{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> Do() =&gt; System.Console.WriteLine(<span style="color:#e6db74">&#34;Parent&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Child</span> : Parent{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Do() =&gt; System.Console.WriteLine(<span style="color:#e6db74">&#34;Child&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program1</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(){
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 当父类中的 Do 没有使用 virtual 修饰，子类中的 Do 没有使用</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// override 修饰时</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Child c = new Child();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// c.Do();// Child</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// ((Parent)c).Do();// Parent</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// ((IDo)c).Do();// Parent </span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// // 因为 Parent 中的 Do 方法才是对 IDo 接口的直接实现</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// // 故这里访问的是 Parent 中的 Do 方法</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Child c = <span style="color:#66d9ef">new</span> Child();
+</span></span><span style="display:flex;"><span>        c.Do();<span style="color:#75715e">// Child</span>
+</span></span><span style="display:flex;"><span>        ((Parent)c).Do();<span style="color:#75715e">// Child</span>
+</span></span><span style="display:flex;"><span>        ((IDo)c).Do();<span style="color:#75715e">// Child </span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 此时虽然将 c 变量分别转换为了 Parent 和 IDo</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 但是由于子类 Child 中重写了 Parent 中的 Do 方法</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 相当于进行了覆盖，不管是哪个类型变量实际上都只能看到</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 一个 Do 方法，那就是子类 Child 中的 Do 方法</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Parent p = <span style="color:#66d9ef">new</span> Parent();
+</span></span><span style="display:flex;"><span>        p.Do();<span style="color:#75715e">// Parent</span>
+</span></span><span style="display:flex;"><span>        ((IDo)p).Do();<span style="color:#75715e">// Parent</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 此时只有 Parent 中的 Do 是 IDo 接口唯一知道的实现方法</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 故只会输出 Parent </span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>显式实现的接口成员不可以被标记为 virtual，也不可以通过寻常的方式来重写，但是可以对其进行重新实现</strong></li>
+</ul>
+<h3 id="在子类中重新实现接口"><strong>在子类中重新实现接口：</strong></h3>
+<ul>
+<li><strong>子类可以重新实现父类已经实现的接口成员</strong></li>
+<li><strong>重新实现会“劫持”成员的实现（通过转化为接口然后调用），无论在基类中该成员是否是 virtual 的。无论该成员是显式的还是隐式的实现（但最好还是显式实现的）。</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IUndoable</span> { <span style="color:#66d9ef">void</span> Undo(); }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TextBox</span> : IUndoable{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">void</span> IUndoable.Undo() =&gt; Console.WriteLine(<span style="color:#e6db74">&#34;TextBox.Undo&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RichTextBox</span> : TextBox,IUndoable{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Undo() =&gt; Console.WriteLine(<span style="color:#e6db74">&#34;RichTextBox.Undo&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(){
+</span></span><span style="display:flex;"><span>	RichTextBox rtb = <span style="color:#66d9ef">new</span> RichTextBox();
+</span></span><span style="display:flex;"><span>	rtb.Undo();<span style="color:#75715e">// RichTextBox.Undo</span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">// 此时因为子类 RichTextBox 也实现了接口 IUndoable </span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">// 故 IUndoable 接口中的 Undo() 方法在子类 RichTextBox 中也相当于有了直接实现</span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">// 故这里调用的是子类 RichTextBox 中的方法</span>
+</span></span><span style="display:flex;"><span>	((IUndoable)rtb).Undo();<span style="color:#75715e">// RichTextBox.Undo</span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">// 如果在父类 TextBox 没有显式实现 Undo() 方法，而是默认的隐式实现</span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">// 即： public void Undo() =&gt; Console.WriteLine(&#34;TextBox.Undo&#34;);</span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">// 那么在这里就可以访问到 TextBox 中的 Undo() 方法，那么此时就会调用</span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">// TextBox 中实现的 Undo 方法</span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">// ((TextBox)rtb).Undo;</span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">// 如果没有隐式实现，那么这样调用就会发生错误，因为在 TextBox 中是看不到</span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">// Undo 方法的</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>重新实现接口还是适用于重写显式实现的接口成员</strong></li>
+</ul>
+<h4 id="重新实现接口的替代方案"><strong>重新实现接口的替代方案：</strong></h4>
+<ul>
+<li>
+<p><strong>最好的办法是设计一个无需重新实现的基类</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>隐式实现成员的时候，按需标记为 virtual</strong></li>
+<li><strong>显式实现成员的时候，可以这样做：</strong></li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TextBox</span> : IUndoable{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">void</span> IUndoable.Undo() =&gt; Undo();	<span style="color:#75715e">// Calls method below</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> Undo() =&gt; 
+</span></span><span style="display:flex;"><span>     Console.WriteLine(<span style="color:#e6db74">&#34;TextBox.Undo&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RichTextBox</span> : TextBox{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Undo() =&gt; 
+</span></span><span style="display:flex;"><span>     Console.WriteLine(<span style="color:#e6db74">&#34;RichTextBox.Undo&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li><strong>如果不想有子类，那么直接把 class 给 sealed</strong></li>
+</ul>
+<h3 id="接口与装箱"><strong>接口与装箱：</strong></h3>
+<ul>
+<li><strong>把 struct 转化为接口会导致装箱</strong></li>
+<li><strong>调用 struct 上隐式实现的成员不会导致装箱</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">I</span> { <span style="color:#66d9ef">void</span> Foo(); }
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">S</span> : I { <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Foo(){} }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>S s = <span style="color:#66d9ef">new</span> S();
+</span></span><span style="display:flex;"><span>s.Foo();	<span style="color:#75715e">// No boxing.</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>I i = s;	<span style="color:#75715e">// Box occurs when casting to interface </span>
+</span></span><span style="display:flex;"><span>i.Foo();
+</span></span></code></pre></div><h3 id="什么是枚举">什么是枚举：</h3>
+<ul>
+<li><strong>枚举是一个特殊的值类型，它可以让你指定一组命名的数值常量：</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> BorderSide { Left,Right,Top,Bottom}
+</span></span><span style="display:flex;"><span>BorderSide topSide = BorderSide.Top;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> isTop = (topSide == BorderSide.Top);	<span style="color:#75715e">// True</span>
+</span></span></code></pre></div><h4 id="枚举的底层原理">枚举的底层原理：</h4>
+<ul>
+<li>
+<p><strong>每个枚举都对应一个底层的整型数值（Enum.GetUderLyingType()）。默认：</strong></p>
+<ul>
+<li>==是 int 类型==</li>
+<li>==0，1，2 &hellip;. 会按照枚举成员的声明顺序自动赋值==</li>
+</ul>
+</li>
+<li>
+<p><strong>也可以指定其他的类型作为枚举的整数类型，例如 byte：</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> BorderSide : <span style="color:#66d9ef">byte</span> { Left,Right,Top,Bottom}
+</span></span></code></pre></div></li>
+<li>
+<p><strong>也可以单独指定枚举成员对应的整数值</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> BorderSide : <span style="color:#66d9ef">byte</span> { Left=<span style="color:#ae81ff">1</span>,Right=<span style="color:#ae81ff">2</span>,Top=<span style="color:#ae81ff">10</span>,Bottom=<span style="color:#ae81ff">11</span>}
+</span></span></code></pre></div></li>
+<li>
+<p><strong>也可以只指定其中某些成员的数值，未被赋值的成员将接着它前面已经赋值的成员的值递增</strong></p>
+</li>
+</ul>
+<h4 id="0">0：</h4>
+<ul>
+<li>
+<p><strong>在枚举表达式里，0数值会被编译器特殊对待，它不需要显式的转换：</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>BorderSide b = <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span>(b == <span style="color:#ae81ff">0</span>) ... 
+</span></span></code></pre></div></li>
+<li>
+<p><strong>因为枚举的第一个成员通常被当做“默认值”，它的值默认就是0</strong></p>
+</li>
+<li>
+<p><strong>组合枚举里，0表示没有标志（flags）</strong></p>
+</li>
+</ul>
+<h3 id="flags-enum">FLAGS ENUM：</h3>
+<ul>
+<li><strong>可以对枚举的成员进行组合</strong></li>
+<li><strong>为了避免歧义，枚举成员需要显式的赋值，典型的就是使用2的乘幂</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#a6e22e">[Flags]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> BorderSides { None=<span style="color:#ae81ff">0</span>,Left=<span style="color:#ae81ff">1</span>,Right=<span style="color:#ae81ff">2</span>,Top=<span style="color:#ae81ff">4</span>,Bottom=<span style="color:#ae81ff">8</span> }
+</span></span></code></pre></div><ul>
+<li>**flags enum 可以使用位操作符，例如 | 和 &amp; **</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>BoderSides leftRight = BorderSides.Left | BoderSides.Right;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span>( (leftRight &amp; BorderSides.Left) != <span style="color:#ae81ff">0</span>){
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#e6db74">&#34;Includes Left&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">string</span> formatted = leftRight.ToString();		<span style="color:#75715e">// &#34;Left, Right&#34;</span>
+</span></span><span style="display:flex;"><span>BoderSides s = BorderSides.Left;
+</span></span><span style="display:flex;"><span>s |= BorderSides.Right;
+</span></span><span style="display:flex;"><span>Console.WriteLine(s == leftRight);			<span style="color:#75715e">// True</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>s ^= BorderSides.Right;
+</span></span><span style="display:flex;"><span>Console.WriteLine(s);		<span style="color:#75715e">// left	</span>
+</span></span></code></pre></div><h3 id="flags-enum-底层原理">FLAGS ENUM 底层原理</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#a6e22e">[Flags]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> Borders{
+</span></span><span style="display:flex;"><span>    Top = <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>    Right = <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>    Bottom = <span style="color:#ae81ff">4</span>,
+</span></span><span style="display:flex;"><span>    Left = <span style="color:#ae81ff">8</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">Top:	0000_0001
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">Right:	0000_0010
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">Bottom:	0000_0100
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">Left:	0000_1000
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">*/</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> b = Borders.Top | Borders.Right | Borders.Bottm;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">Top:	0000_0001
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">Right:	0000_0010
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">Bottom:	0000_0100
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">-------------------|
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">b:	    0000_0111
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">*/</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> c = b &amp; Borders.Right;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">b:	    0000_0111
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">Right:	0000_0010
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">------------------&amp;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">c:	    0000_0010
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">*/</span>
+</span></span></code></pre></div><h4 id="flags-属性">FLAGS 属性：</h4>
+<ul>
+<li><strong>按约定，如果枚举成员可组合的话，flags 属性就应该引用在枚举类型上</strong>
+<ul>
+<li>==如果声明了这样的枚举却没有使用 flags 属性，你仍然可以使用组合枚举成员，但是调用枚举实例的 ToString() 方法是，输出的将是一个数值而不是一组名称==</li>
+</ul>
+</li>
+<li><strong>按约定，可组合枚举的名称应该是复数的</strong></li>
+</ul>
+<h4 id="枚举支持的操作符">枚举支持的操作符：</h4>
+<h3 id="类型安全的问题">类型安全的问题：</h3>
+<ul>
+<li>
+<p><strong>检查枚举值的合理性：Enum.IsDefined() 静态方法</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> BorderSide  { Left,Right,Top,Bottom}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>BorderSide side = (BorderSide)<span style="color:#ae81ff">12345</span>;
+</span></span><span style="display:flex;"><span>Console.WriteLine(Enum.IsDefined(<span style="color:#66d9ef">typeof</span>(BorderSide),side));	<span style="color:#75715e">// False</span>
+</span></span></code></pre></div></li>
+</ul>
+<h4 id="思考题">思考题：</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> BorderSide { Left, Right, Top, Bottom }
+</span></span></code></pre></div><ul>
+<li><strong>如何把上面这个枚举类型变成一个含有其所有成员/底层数值的集合</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span>BoderSide[] borderSides = [BoderSide.Left,BoderSide.Right,BoderSide.Top,BoderSide.Bottom];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span>[] array = [<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>];
+</span></span></code></pre></div><h3 id="什么是嵌套类型">什么是嵌套类型：</h3>
+<ul>
+<li><strong>嵌套类型就是声明在另一个类型作用范围内的类型</strong></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TopLevel</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Nested</span>{}	<span style="color:#75715e">// Nested class</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> Color {Red,Blue,Tan}	<span style="color:#75715e">// Nested enum</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="嵌套类型的特性">嵌套类型的特性：</h3>
+<ul>
+<li><strong>可以访问封闭类型的私有成员，以及任何封闭类型能访问的东西</strong></li>
+<li><strong>可以使用所有的访问修饰符来声明，不仅仅是 public 和 internal</strong></li>
+<li>**嵌套类型的默认访问级别是 private 而不是 internal **</li>
+<li><strong>从封闭类型外边访问嵌套类型需要使用封闭类型的名称</strong></li>
+</ul>
+<h4 id="嵌套类型的例子">嵌套类型的例子：</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TopLevel</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Nested</span>{}	<span style="color:#75715e">// Nested class</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> Color {Red,Blue,Tan}	<span style="color:#75715e">// Nested enum</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>TopLevel.Color color = TopLevel.Color.Red;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TopLevel</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> x;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Nested</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Foo(){ Console.WriteLine( TopLevel.x); }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>
+</div>
+
+  </main><div class="footer gradient-2">
+  <div class="container footer-container ">
+    <div class="row">
+      <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+        <div class="footer-title">Sitemap</div>
+        <ul class="list-unstyled">
+            
+              
+                <li><a href="https://zlim530.github.io/tags/">Tags</a></li>
+              
+              
+                <li><a href="https://zlim530.github.io/categories/">Categories</a></li>
+              
+            
+            
+            
+            <li><a rel="alternate" type="application/rss&#43;xml" href="https://zlim530.github.io/index.xml"><i class="fas fa-rss-square"></i> RSS Feed</a></li>
+            
+            
+            
+        </ul>
+      </div>
+      <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+        
+      </div>
+      <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+        
+      </div> 
+      <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+        <p class="pull-right text-right">
+          <small><em>Proudly powered by <a href="https://gohugo.io/" rel="noopener" target="_blank">Hugo</a></em></small><br/>
+          <small><em>Theme - <a href="https://github.com/shaform/hugo-theme-den" rel="noopener" target="_blank">Den</a></em></small><br/>
+          <small>
+            &copy; 
+            
+            2023
+          </small>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+</body>
+</html>

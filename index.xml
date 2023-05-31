@@ -1,12 +1,46 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:webfeeds="http://webfeeds.org/rss/1.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Zlim530 Blog Site</title>
     <link>https://zlim530.github.io/</link>
     <description>Recent content on Zlim530 Blog Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 30 May 2023 15:49:34 +0800</lastBuildDate><atom:link href="https://zlim530.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 31 May 2023 16:15:48 +0800</lastBuildDate>
+    
+    <atom:link href="https://zlim530.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>關於</title>
+      <link>https://zlim530.github.io/zh-tw/about/</link>
+      <pubDate>Sun, 20 Aug 2017 21:38:52 +0800</pubDate>
+      
+      <guid>https://zlim530.github.io/zh-tw/about/</guid>
+      <description>Hugo 是個靜態網頁產生器。
+它利用了一些開放原始碼的專案像是：
+Cobra Viper J Walter Weatherman Cast 了解並貢獻： GitHub.</description>
+    </item>
+    
+    <item>
+      <title>真会 C# 系列视频笔记</title>
+      <link>https://zlim530.github.io/posts/variousnotes/second_post/</link>
+      <pubDate>Wed, 31 May 2023 16:15:48 +0800</pubDate>
+      
+      <guid>https://zlim530.github.io/posts/variousnotes/second_post/</guid>
+      <description>真会 C# 系列视频笔记 编译： C# 编译器把 .cs 结尾的源码文件编译成 Assembly
+Assembly 是 .NET Core 里的包装和部署的单元
+Assembly 可以是应用程序，也可以是库
+.exe dll 针对于 .NET Core 应用，编译只会生成 .DLL 文件：
+DLL 文件是可以直接运行的
+关键字：对编译器有特殊意义的名字 C#里所有的值都是类型的实例。值的含义，变量可能拥有的值是什么，都由它的类型决定。
+构造函数与实例化： 数据是通过实例化一个类型来创建的 预定义的类型直接写 Literal（字面量）就可以被实例化了 而自定义类型则通过 new 操作符来创建实例 实例成员 vs 静态成员 操作于类型实例的数据成员和函数成员都叫做实例成员
+操作于类型而不是类型实例的数据成员和函数成员叫做静态成员
+static 静态类 static class 的所有成员都是静态的
+静态类不可以创建实例，例如 Console 类，它在整个应用程序就一份，这一份是共享的 NULL： NULL 是一个 Literal 可以把 null 赋值给引用（变量），表示该引用不指向任何一个对象 null.Property 会抛出 NullReferenceException (空指针异常) 普通的值类型不可为 null 但是 C#中有一中可空类型（nullable types）来表示值类型的 null 内置类型： 全部都在 System 命名空间下
+除了 decimal 之外的内置类型都叫做原始类型</description>
+    </item>
+    
     <item>
       <title>C# 异步编程</title>
       <link>https://zlim530.github.io/posts/first_post/</link>
@@ -28,6 +62,33 @@ CPU的运行被分成很多的“时间片”（时间片非常的短，我们�
 无论是多进程，还是多线程，本质上都是为了让多个进程/线程同时（或者至少看起来像同时）完成一个工作，从而：
 压榨系统性能。简单理解，一桌菜10个人吃比1个人吃要快（并发后文详述） 提高用户响应。操作系统多进程，所以我们可以一边听歌（一个进程）一边写代码（又一个进程）；射击游戏多线程，所以你跑你的，我打我的，不会你跑的时候我就不能开枪，我开枪的时候你就不能跑……（用WinForm 做坦克大战就这效果） 用于ASP.NET的IIS本身就是多线程的。
 2. 异步和并行-线程代码 2.1 Thread类 Task是在.NET 4.0之后引入的，之前.NET提供的是Thread（线程）类。 2.1.1 单线程 在此之前，我们的代码都是运行在一个线程中，这被称之为“单线程编程”。 我们默认使用的这个线程被称为主（primary）线程，或者启动线程。使用Thread.CurrentThread可以获取： using System.Threading; Thread current = Thread.CurrentThread; 2.1.2 多线程 让代码运行在多个线程中，就被称之为“多线程编程”，又称之为并发。 可以new一个工作线程： static void Main(){ Thread current = new Thread(Process); current.Start(); // 然后，可以获取线程的相关信息：注意自行下列代码时有可能会因为子线程 current 的执行完毕而抛出异常，那么此时可以获取当前正在执行的线程来查看下列信息：Thread current = Thread.</description>
+    </item>
+    
+    <item>
+      <title>標頭圖片</title>
+      <link>https://zlim530.github.io/zh-tw/posts/header-image/</link>
+      <pubDate>Mon, 05 Mar 2018 16:01:23 +0800</pubDate>
+      
+      <guid>https://zlim530.github.io/zh-tw/posts/header-image/</guid>
+      <description>這是一個簡單的筆記。</description>
+    </item>
+    
+    <item>
+      <title>筆記 2</title>
+      <link>https://zlim530.github.io/zh-tw/posts/note-2/</link>
+      <pubDate>Sun, 04 Mar 2018 16:01:23 +0800</pubDate>
+      
+      <guid>https://zlim530.github.io/zh-tw/posts/note-2/</guid>
+      <description>這是一個簡單的筆記。</description>
+    </item>
+    
+    <item>
+      <title>筆記 1</title>
+      <link>https://zlim530.github.io/zh-tw/posts/note-1/</link>
+      <pubDate>Sat, 03 Mar 2018 16:01:23 +0800</pubDate>
+      
+      <guid>https://zlim530.github.io/zh-tw/posts/note-1/</guid>
+      <description>這是一個簡單的筆記。</description>
     </item>
     
   </channel>

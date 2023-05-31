@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Zh-tws on Zlim530 Blog Site</title>
+    <link>https://zlim530.github.io/zh-tw/</link>
+    <description>Recent content in Zh-tws on Zlim530 Blog Site</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 05 Mar 2018 16:01:23 +0800</lastBuildDate><atom:link href="https://zlim530.github.io/zh-tw/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>關於</title>
+      <link>https://zlim530.github.io/zh-tw/about/</link>
+      <pubDate>Sun, 20 Aug 2017 21:38:52 +0800</pubDate>
+      
+      <guid>https://zlim530.github.io/zh-tw/about/</guid>
+      <description>Hugo 是個靜態網頁產生器。
+它利用了一些開放原始碼的專案像是：
+Cobra Viper J Walter Weatherman Cast 了解並貢獻： GitHub.</description>
+    </item>
+    
+    <item>
+      <title>標頭圖片</title>
+      <link>https://zlim530.github.io/zh-tw/posts/header-image/</link>
+      <pubDate>Mon, 05 Mar 2018 16:01:23 +0800</pubDate>
+      
+      <guid>https://zlim530.github.io/zh-tw/posts/header-image/</guid>
+      <description>這是一個簡單的筆記。</description>
+    </item>
+    
+    <item>
+      <title>筆記 2</title>
+      <link>https://zlim530.github.io/zh-tw/posts/note-2/</link>
+      <pubDate>Sun, 04 Mar 2018 16:01:23 +0800</pubDate>
+      
+      <guid>https://zlim530.github.io/zh-tw/posts/note-2/</guid>
+      <description>這是一個簡單的筆記。</description>
+    </item>
+    
+    <item>
+      <title>筆記 1</title>
+      <link>https://zlim530.github.io/zh-tw/posts/note-1/</link>
+      <pubDate>Sat, 03 Mar 2018 16:01:23 +0800</pubDate>
+      
+      <guid>https://zlim530.github.io/zh-tw/posts/note-1/</guid>
+      <description>這是一個簡單的筆記。</description>
+    </item>
+    
+  </channel>
+</rss>

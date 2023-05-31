@@ -6,7 +6,26 @@
     <description>Recent content in Posts on Zlim530 Blog Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 30 May 2023 15:49:34 +0800</lastBuildDate><atom:link href="https://zlim530.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 31 May 2023 16:15:48 +0800</lastBuildDate><atom:link href="https://zlim530.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>真会 C# 系列视频笔记</title>
+      <link>https://zlim530.github.io/posts/variousnotes/second_post/</link>
+      <pubDate>Wed, 31 May 2023 16:15:48 +0800</pubDate>
+      
+      <guid>https://zlim530.github.io/posts/variousnotes/second_post/</guid>
+      <description>真会 C# 系列视频笔记 编译： C# 编译器把 .cs 结尾的源码文件编译成 Assembly
+Assembly 是 .NET Core 里的包装和部署的单元
+Assembly 可以是应用程序，也可以是库
+.exe dll 针对于 .NET Core 应用，编译只会生成 .DLL 文件：
+DLL 文件是可以直接运行的
+关键字：对编译器有特殊意义的名字 C#里所有的值都是类型的实例。值的含义，变量可能拥有的值是什么，都由它的类型决定。
+构造函数与实例化： 数据是通过实例化一个类型来创建的 预定义的类型直接写 Literal（字面量）就可以被实例化了 而自定义类型则通过 new 操作符来创建实例 实例成员 vs 静态成员 操作于类型实例的数据成员和函数成员都叫做实例成员
+操作于类型而不是类型实例的数据成员和函数成员叫做静态成员
+static 静态类 static class 的所有成员都是静态的
+静态类不可以创建实例，例如 Console 类，它在整个应用程序就一份，这一份是共享的 NULL： NULL 是一个 Literal 可以把 null 赋值给引用（变量），表示该引用不指向任何一个对象 null.Property 会抛出 NullReferenceException (空指针异常) 普通的值类型不可为 null 但是 C#中有一中可空类型（nullable types）来表示值类型的 null 内置类型： 全部都在 System 命名空间下
+除了 decimal 之外的内置类型都叫做原始类型</description>
+    </item>
+    
     <item>
       <title>C# 异步编程</title>
       <link>https://zlim530.github.io/posts/first_post/</link>
